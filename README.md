@@ -21,4 +21,5 @@ In the last commit, I added a functioning navigation menu, which in the future w
 
 ## Demo
 
-[![Clicker Project Demo](https://github.com/castromx/Clicker_Project_Web/assets/96194271/8154ecf5-2738-4747-9ef7-7f3cadb0f601)](https://github.com/castromx/Clicker_Project_Web/assets/96194271/8154ecf5-2738-4747-9ef7-7f3cadb0f601)
+
+![doc_2024-05-28_22-55-42](https://github.com/castromx/Clicker_Project_Web/assets/96194271/0d28b29e-c4f6-43dd-831e-3460c9e33fc7)
