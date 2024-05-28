@@ -1,8 +1,5 @@
 import aioredis
 from fastapi import FastAPI, status, Depends, HTTPException
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 from starlette.middleware.cors import CORSMiddleware
 
 from database import schemas, models, crud
@@ -10,6 +7,10 @@ from sqlalchemy.orm import Session
 from database.database import get_db_session
 
 app = FastAPI()
+
+@app.get("/")
+async def root():
+    return status.HTTP_200_OK
 
 origins = [
     "http://localhost",
@@ -25,11 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return status.HTTP_200_OK
-
-
 @app.post("/create_user")
 async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_session)) -> schemas.UserAccount:
     user = crud.create_user(db=db, user=user)
@@ -39,7 +35,6 @@ async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_se
 
 
 @app.get("/get_user")
-@cache(expire=3600)
 async def get_user(id: int, db: Session = Depends(get_db_session)) -> schemas.UserAccount:
     return crud.get_user(db, id)
 
@@ -77,8 +72,3 @@ async def create_user_boosts(user_id: int, db: Session = Depends(get_db_session)
 async def get_user_boosts(user_id: int, db: Session = Depends(get_db_session)):
     boosts = crud.get_user_boosts(db, user_id)
     return boosts
-
-@app.on_event('startup')
-async def startup_event():
-    redis = aioredis.from_url("redis://localhost", encoding="utf-8", decode_responses=True)
-    FastAPICache.init(RedisBackend(redis), prefix="/cache")
