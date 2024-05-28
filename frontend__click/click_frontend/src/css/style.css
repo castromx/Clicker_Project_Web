@@ -1,0 +1,91 @@
+body {
+    background: linear-gradient(to bottom, #03B3FF, #FF03A1);
+    height: 100vh;
+    margin: 0; 
+    justify-content: center; 
+    align-items: center; 
+    color: white; 
+    font-family: Arial, sans-serif; 
+}
+
+.user-details {
+    text-align: right;
+    margin-right: 10px;
+}
+
+.user-score {
+    margin-top: -100px;
+    text-align: left;
+    margin-left: 10px;
+}
+
+/* Стилі для фото */
+img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+/* Центрування контейнера додатка */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    background-color: #f0f0f0;
+    box-sizing: border-box;
+}
+
+/* Стилі для навігації */
+.navbar {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 20px 20px 20px 20px; /* Відступи з боків і знизу */
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.navbar-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.navbar-item {
+    margin: 0 10px;
+}
+
+.navbar-item a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbar-item a:hover {
+    color: #ff6347;
+}
+
+/* Стилі для контейнера з контентом */
+.content-container {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    width: 60%;
+    flex-grow: 1;
+}
