@@ -1,4 +1,24 @@
-In the last commit, I added the ability to click on the icon, and add a user score and change the user charge according to the click
+# Clicker Project
 
+This is a clicker project similar to NotCoin.
 
-![image](https://github.com/castromx/Clicker_Project_Web/assets/96194271/eebc1579-751b-4bfc-b158-b18c73328cdd)
+## Technologies
+
+### Backend:
+- **Python**
+- **FastAPI**
+- **SQLAlchemy**
+- **Redis**
+
+### Frontend:
+- **JavaScript**
+- **React**
+- **Axios**
+
+## Latest Updates
+
+In the last commit, I added a functioning navigation menu, which in the future will contain relevant information from databases.
+
+## Demo
+
+[![Clicker Project Demo](https://github.com/castromx/Clicker_Project_Web/assets/96194271/8154ecf5-2738-4747-9ef7-7f3cadb0f601)](https://github.com/castromx/Clicker_Project_Web/assets/96194271/8154ecf5-2738-4747-9ef7-7f3cadb0f601)
