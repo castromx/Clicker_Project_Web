@@ -62,3 +62,6 @@ def dev_charge(db: Session, user_id: int):
     boosts.charge_count -= count_miner
     db.commit()
     return boosts.charge_count
+
+def create_clans(db: Session, name: str):
+    pass
