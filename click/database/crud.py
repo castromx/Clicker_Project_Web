@@ -3,6 +3,8 @@ from datetime import datetime
 from . import schemas, models
 from typing import List
 
+from .models import Image
+
 
 def create_user(db: Session, user: schemas.UserAccount):
     time_now = datetime.utcnow()
@@ -63,5 +65,20 @@ def dev_charge(db: Session, user_id: int):
     db.commit()
     return boosts.charge_count
 
-def create_clans(db: Session, name: str):
-    pass
+def create_image(db: Session, image_data: bytes):
+    db_image = models.Image(data=image_data)
+    db.add(db_image)
+    db.commit()
+    db.refresh(db_image)
+    return db_image
+
+
+def create_clan(db: Session, clan: schemas.ClanCreate, db_image: Image):
+    db_clan = models.Clan(name=clan.name, img_id=db_image.id if db_image else None)
+    db.add(db_clan)
+    db.commit()
+    db.refresh(db_clan)
+    return db_clan
+
+def get_clan(db: Session, clan_id: int):
+    return db.query(models.Clan).filter(models.Clan.id == clan_id).first()
