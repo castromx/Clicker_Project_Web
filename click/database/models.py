@@ -1,5 +1,6 @@
+import typing
 from datetime import datetime
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, LargeBinary
 from sqlalchemy import String
 from .database import Base
 from sqlalchemy.orm import Mapped
@@ -40,11 +41,21 @@ class UserScore(Base):
     user: Mapped[User] = relationship("User", back_populates="scores")
 
 
+class Image(Base):
+    __tablename__ = "image"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    data: Mapped[bytes] = mapped_column(LargeBinary)
+    clans : Mapped[int] = relationship("Clan", back_populates="img")
+
 class Clan(Base):
     __tablename__ = "clan"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
+    img_id: Mapped[int] = mapped_column(ForeignKey('image.id'))
     count_score: Mapped[int]
+    img: Mapped[Image] = relationship("Image", back_populates="clans")
+
+
 
 
 class UsersClan(Base):
