@@ -35,3 +35,16 @@ class MainPage(BaseModel):
 
     class Config:
         orm_mode = True
+
+class ClanCreate(BaseModel):
+    name: str
+    count: int
+    img_id: int
+
+class Clan(BaseModel):
+    name: str
+    count: int
+    img: int
+
+    class Config:
+        orm_mode = True
