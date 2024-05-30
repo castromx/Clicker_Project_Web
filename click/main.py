@@ -1,5 +1,5 @@
 import aioredis
-from fastapi import FastAPI, status, Depends, HTTPException
+from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File
 from starlette.middleware.cors import CORSMiddleware
 
 from database import schemas, models, crud
@@ -72,3 +72,27 @@ async def create_user_boosts(user_id: int, db: Session = Depends(get_db_session)
 async def get_user_boosts(user_id: int, db: Session = Depends(get_db_session)):
     boosts = crud.get_user_boosts(db, user_id)
     return boosts
+
+@app.post("/clans/", response_model=schemas.Clan)
+def create_clan(clan: schemas.ClanCreate, db: Session = Depends(get_db_session)):
+    return crud.create_clan(db=db, clan=clan)
+
+# URL для отримання конкретного клану за ідентифікатором
+@app.get("/clans/{clan_id}", response_model=schemas.Clan)
+def read_clan(clan_id: int, db: Session = Depends(get_db_session)):
+    db_clan = crud.get_clan(db=db, clan_id=clan_id)
+    if db_clan is None:
+        raise HTTPException(status_code=404, detail="Clan not found")
+    return db_clan
+
+
+# URL для завантаження фото
+@app.post("/uploadfile/")
+def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db_session)):
+    # Отримуємо дані з файлу
+    file_data = file.file.read()
+
+    # Зберігаємо фото у базі даних
+    db_image = crud.create_image(db=db, image_data=file_data)
+
+    return {"image_id": db_image.id}
