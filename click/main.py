@@ -8,9 +8,11 @@ from database.database import get_db_session
 
 app = FastAPI()
 
+
 @app.get("/")
 async def root():
     return status.HTTP_200_OK
+
 
 origins = [
     "http://localhost",
@@ -25,6 +27,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.post("/create_user")
 async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_session)) -> schemas.UserAccount:
@@ -56,6 +59,11 @@ async def add_user_scores(user_id: int, count: int, db: Session = Depends(get_db
     count = boosts.mine_coint * count
     if charge > 1:
         crud.add_point(db, count, user_id)
+        clan = crud.get_clans_for_user(db, user_id)
+        if clan:
+            clan_id = clan.id
+            crud.add_clan_point(db, clan_id)
+            print(clan)
         crud.dev_charge(db, user_id)
         charge_after = boosts.charge_count
         count_after = crud.get_user_scores(db, user_id)
@@ -68,31 +76,57 @@ async def add_user_scores(user_id: int, count: int, db: Session = Depends(get_db
 async def create_user_boosts(user_id: int, db: Session = Depends(get_db_session)):
     return crud.create_user_boost(db, user_id)
 
+
 @app.get("/get_user_boosts")
 async def get_user_boosts(user_id: int, db: Session = Depends(get_db_session)):
     boosts = crud.get_user_boosts(db, user_id)
     return boosts
 
-@app.post("/clans/", response_model=schemas.Clan)
-def create_clan(clan: schemas.ClanCreate, db: Session = Depends(get_db_session)):
-    return crud.create_clan(db=db, clan=clan)
 
-# URL для отримання конкретного клану за ідентифікатором
+@app.post("/clans/", response_model=schemas.Clan)
+async def create_clan(clan: schemas.ClanCreate, db: Session = Depends(get_db_session)):
+    db_image = db.query(models.Image).filter(models.Image.id == clan.img_id).first()
+    clan = crud.create_clan(db=db, clan=clan)
+    crud.create_clan_score(db, clan.id)
+    if not db_image:
+        raise HTTPException(status_code=422, detail="Image not found")
+    return clan
+
+
+
 @app.get("/clans/{clan_id}", response_model=schemas.Clan)
-def read_clan(clan_id: int, db: Session = Depends(get_db_session)):
+async def read_clan(clan_id: int, db: Session = Depends(get_db_session)):
     db_clan = crud.get_clan(db=db, clan_id=clan_id)
     if db_clan is None:
         raise HTTPException(status_code=404, detail="Clan not found")
     return db_clan
 
 
-# URL для завантаження фото
+
 @app.post("/uploadfile/")
-def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db_session)):
-    # Отримуємо дані з файлу
+async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db_session)):
     file_data = file.file.read()
-
-    # Зберігаємо фото у базі даних
     db_image = crud.create_image(db=db, image_data=file_data)
-
     return {"image_id": db_image.id}
+
+
+@app.post("/enter_in_clan")
+async def enter_in_clan(user_id: int, clan_id: int, db: Session = Depends(get_db_session)):
+    if crud.get_clans_for_user(db, user_id):
+        return {"Вам потрібно вийти з попереднього клану, щоб приєднатись у цей"}
+    return crud.enter_in_clan(db, user_id, clan_id)
+
+
+@app.get("/get_user_clan")
+async def get_user_clan(user_id: int, db: Session = Depends(get_db_session)):
+    return crud.get_clans_for_user(db, user_id)
+
+
+@app.delete("/leave_from_clan")
+async def leave_from_clan(user_id: int, db: Session = Depends(get_db_session)):
+    return crud.leave_from_clan(db, user_id)
+
+
+@app.post("/add_point_clan")
+async def add_point_clan(clan_id: int, db: Session = Depends(get_db_session)):
+    return crud.add_clan_point(db, clan_id)

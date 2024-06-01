@@ -1,4 +1,3 @@
-import typing
 from datetime import datetime
 from sqlalchemy import ForeignKey, LargeBinary
 from sqlalchemy import String
@@ -24,9 +23,9 @@ class Boosts(Base):
     __tablename__ = "boosts"
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
-    fill_char_count: Mapped[int] # заповнення заряду
-    charge_count: Mapped[int] # к-ть заряду
-    mine_coint: Mapped[int] # К-ть монет, видобутих за клік
+    fill_char_count: Mapped[int]  # заповнення заряду
+    charge_count: Mapped[int]  # к-ть заряду
+    mine_coint: Mapped[int]  # К-ть монет, видобутих за клік
     user: Mapped[User] = relationship("User", back_populates="boosts")
 
     def __repr__(self) -> str:
@@ -45,17 +44,24 @@ class Image(Base):
     __tablename__ = "image"
     id: Mapped[int] = mapped_column(primary_key=True)
     data: Mapped[bytes] = mapped_column(LargeBinary)
-    clans : Mapped[int] = relationship("Clan", back_populates="img")
+    clans: Mapped[int] = relationship("Clan", back_populates="img")
+
 
 class Clan(Base):
     __tablename__ = "clan"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     img_id: Mapped[int] = mapped_column(ForeignKey('image.id'))
-    count_score: Mapped[int]
+    count_score: Mapped[int] = relationship("ClanScore", back_populates="user")
     img: Mapped[Image] = relationship("Image", back_populates="clans")
 
 
+class ClanScore(Base):
+    __tablename__ = "clan_score"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    clan_id: Mapped[int] = mapped_column(ForeignKey("clan.id"))
+    score: Mapped[int]
+    user: Mapped[User] = relationship("Clan", back_populates="count_score")
 
 
 class UsersClan(Base):
