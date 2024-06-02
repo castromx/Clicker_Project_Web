@@ -19,6 +19,18 @@ body {
     margin-left: 10px;
 }
 
+.user-boosts-details {
+    margin-top: -100px; /* Якщо вам потрібно зсунути контейнер наверх */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Центрує текст всередині контейнера */
+    width: fit-content; /* Контейнер має ширину, що відповідає його вмісту */
+    padding: 20px; /* Додаткові відступи всередині контейнера */
+    border: 1px solid #ddd; /* Опціонально, для візуальної чіткості контейнера */
+    background-color: #f9f9f9; /* Опціонально, для фону контейнера */
+}
+
+
 /* Стилі для фото */
 img {
     width: 200px;
@@ -81,11 +93,42 @@ img {
 
 /* Стилі для контейнера з контентом */
 .content-container {
-    background-color: #fff;
+    background-color: #f66262;
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(245, 95, 95, 0.1);
     margin: 20px auto;
     width: 60%;
     flex-grow: 1;
+}
+
+.clan-container {
+    /* display: flex; */
+    align-items: center;
+    background-color: #f64646;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+}
+
+.clan-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.clan-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.clan-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.clan-points {
+    font-size: 14px;
 }
