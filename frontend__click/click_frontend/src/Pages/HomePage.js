@@ -74,7 +74,7 @@ const UserPage = () => {
             {userScore && <UserScore scoreData={userScore} />}
             <p>Charge count: {chargeCount}</p>
             <Image image={image} onClick={handleIconClick} />
-            {clanData && <Clan clansData={clanData}/>}
+            {clanData && <Clan clansData={clanData.data}/>}
         </div>
     );
 };
