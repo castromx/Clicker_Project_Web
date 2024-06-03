@@ -6,7 +6,7 @@ const Clan = ({ clansData }) => {
             {/* <img src={image} alt="Clan Icon" className="clan-image" /> */}
             <div className="clan-info">
                 <p className="clan-name">{clansData.name}</p>
-                <p className="clan-points">К-ть поінтів: {clansData.count_score}</p>
+                <p className="clan-points">К-ть поінтів: {clansData.count}</p>
             </div>
         </div>
     );
