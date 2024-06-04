@@ -31,8 +31,7 @@ body {
 }
 
 
-/* Стилі для фото */
-img {
+.main-photo {
     width: 200px;
     height: 200px;
     border-radius: 50%;
@@ -43,6 +42,7 @@ img {
     transform: translate(-50%, -50%);
     z-index: 1;
 }
+
 
 /* Центрування контейнера додатка */
 .app-container {
@@ -91,25 +91,31 @@ img {
     color: #ff6347;
 }
 
-/* Стилі для контейнера з контентом */
-.content-container {
-    background-color: #f66262;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(245, 95, 95, 0.1);
-    margin: 20px auto;
-    width: 60%;
-    flex-grow: 1;
-}
 
 .clan-container {
-    /* display: flex; */
-    align-items: center;
-    background-color: #f64646;
+    display: flex;
+    align-items: flex-start; /* Вирівнювання елементів від початку контейнера */
+    margin: 20px auto;
+    background-color: #797979;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 10px 0;
+    width: 200;
+    max-width: 600px;
+    min-width: 300px;
+}
+
+.clan-info {
+    display:grid;
+    margin-top: 5px;
+    flex-direction: column;
+}
+
+.clan-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 100px;
 }
 
 .clan-image {
@@ -117,18 +123,10 @@ img {
     height: 50px;
     border-radius: 50%;
     margin-right: 10px;
-}
-
-.clan-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.clan-name {
-    font-size: 18px;
-    font-weight: bold;
+    margin-top: -70px;
 }
 
 .clan-points {
     font-size: 14px;
+    margin-left: 100px;
 }

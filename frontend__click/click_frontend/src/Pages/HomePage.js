@@ -69,12 +69,12 @@ const UserPage = () => {
     };
 
     return (
-        <div>
+        <div className="content-container">
             {userData && <UserDetails userData={userData} />}
             {userScore && <UserScore scoreData={userScore} />}
             <p>Charge count: {chargeCount}</p>
             <Image image={image} onClick={handleIconClick} />
-            {clanData && <Clan clansData={clanData.data}/>}
+            {clanData && <Clan clansData={clanData} />}
         </div>
     );
 };
