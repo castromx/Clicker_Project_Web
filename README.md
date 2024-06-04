@@ -21,4 +21,5 @@ In the past, the committee already implemented 2/4 pages of the navigation menu 
 
 ## Demo
 
-![doc_2024-06-04_22-51-26](https://github.com/castromx/Clicker_Project_Web/assets/96194271/b766841a-5954-414e-b41b-61b1657517c8)
+![doc_2024-06-04_22-51-26 (1)](https://github.com/castromx/Clicker_Project_Web/assets/96194271/3fffb536-9fd6-4a45-99a8-a6b9d9467a82)
+
