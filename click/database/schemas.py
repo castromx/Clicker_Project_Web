@@ -1,7 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 
-# Модель для облікового запису користувача
+
 class UserAccount(BaseModel):
     name: str  # Ім'я користувача
     tg_id: int  # Telegram ID користувача
@@ -11,21 +11,21 @@ class UserAccount(BaseModel):
     class Config:
         orm_mode = True
 
-# Модель для збереження кількості балів користувача
+
 class UserScores(BaseModel):
     score: int  # Кількість балів користувача
 
     class Config:
         orm_mode = True
 
-# Модель для збереження кількості балів клану
+
 class ClanScores(BaseModel):
-    count_score: int  # Кількість балів клану
+    score: int  # Кількість балів клану
 
     class Config:
         orm_mode = True
 
-# Модель для збереження інформації про підсилення користувача
+
 class Boosts(BaseModel):
     user_id: int  # ID користувача
     fill_char_count: int  # Кількість заповнених символів
@@ -35,7 +35,7 @@ class Boosts(BaseModel):
     class Config:
         orm_mode = True
 
-# Модель для головної сторінки, яка включає інформацію про користувача, його бали та підсилення
+
 class MainPage(BaseModel):
     user: UserAccount  # Обліковий запис користувача
     user_scores: UserScores  # Бали користувача
@@ -44,24 +44,28 @@ class MainPage(BaseModel):
     class Config:
         orm_mode = True
 
+
 # Модель для створення клану
 class ClanCreate(BaseModel):
     name: str  # Назва клану
     img_id: int  # ID зображення клану
 
-# Модель для представлення клану
+
 class Clan(BaseModel):
     id: int  # ID клану
     name: str  # Назва клану
+    count_score: ClanScores  # Кількість балів клану
     img_id: int  # ID зображення клану
 
     class Config:
         orm_mode = True
 
-# Модель для представлення зображення
-class Image(BaseModel):
-    id: int  # ID зображення
-    data: bytes  # Дані зображення
 
+class ImageBase(BaseModel):
+    id: int
+    data: bytes
+
+
+class Image(ImageBase):
     class Config:
         orm_mode = True

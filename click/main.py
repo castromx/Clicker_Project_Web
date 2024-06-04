@@ -1,6 +1,7 @@
 import aioredis
 from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File
 from starlette.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from database import schemas, models, crud
 from sqlalchemy.orm import Session
@@ -63,7 +64,6 @@ async def add_user_scores(user_id: int, count: int, db: Session = Depends(get_db
         if clan:
             clan_id = clan.id
             crud.add_clan_point(db, clan_id)
-            print(clan)
         crud.dev_charge(db, user_id)
         charge_after = boosts.charge_count
         count_after = crud.get_user_scores(db, user_id)
@@ -130,3 +130,20 @@ async def leave_from_clan(user_id: int, db: Session = Depends(get_db_session)):
 @app.post("/add_point_clan")
 async def add_point_clan(clan_id: int, db: Session = Depends(get_db_session)):
     return crud.add_clan_point(db, clan_id)
+
+@app.get('/get_all_clans')
+async def get_all_clans(db: Session = Depends(get_db_session)):
+    return crud.get_clans(db)
+
+
+@app.get("/images/{image_id}")
+async def read_image(image_id: int, db: Session = Depends(get_db_session)):
+    db_image = crud.get_image(db, image_id=image_id)
+    if db_image is None:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    temp_file_path = f"temp_image_{image_id}.png"
+    with open(temp_file_path, "wb") as temp_file:
+        temp_file.write(db_image.data)
+
+    return FileResponse(temp_file_path, media_type='image/png', filename=f"image_{image_id}.png")

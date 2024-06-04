@@ -1,7 +1,8 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from datetime import datetime
 from . import schemas, models
 from typing import List
+
 
 # Функція для створення нового користувача
 def create_user(db: Session, user: schemas.UserAccount):
@@ -13,9 +14,11 @@ def create_user(db: Session, user: schemas.UserAccount):
     db.refresh(db_user)
     return db_user
 
+
 # Функція для отримання користувача за його ID
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
+
 
 # Функція для створення початкових балів користувача
 def create_user_score(db: Session, user_id: int):
@@ -27,9 +30,11 @@ def create_user_score(db: Session, user_id: int):
     db.refresh(scores)
     return scores
 
+
 # Функція для отримання балів користувача за його ID
 def get_user_scores(db: Session, user_id: int):
     return db.query(models.UserScore).filter(models.UserScore.user_id == user_id).first()
+
 
 # Функція для додавання балів користувачу
 def add_point(db: Session, count: int, user_id: int):
@@ -42,6 +47,7 @@ def add_point(db: Session, count: int, user_id: int):
     db.refresh(score_user)
     return score_user
 
+
 # Функція для створення підсилення для користувача
 def create_user_boost(db: Session, user_id: int):
     user = get_user(db, user_id)
@@ -52,9 +58,11 @@ def create_user_boost(db: Session, user_id: int):
     db.refresh(boosts)
     return boosts
 
+
 # Функція для отримання підсилення користувача за його ID
 def get_user_boosts(db: Session, user_id: int):
     return db.query(models.Boosts).filter(models.Boosts.user_id == user_id).first()
+
 
 # Функція для зменшення заряду підсилення у користувача
 def dev_charge(db: Session, user_id: int):
@@ -64,6 +72,7 @@ def dev_charge(db: Session, user_id: int):
     db.commit()
     return boosts.charge_count
 
+
 # Функція для створення зображення
 def create_image(db: Session, image_data: bytes):
     db_image = models.Image(data=image_data)
@@ -71,6 +80,7 @@ def create_image(db: Session, image_data: bytes):
     db.commit()
     db.refresh(db_image)
     return db_image
+
 
 # Функція для створення клану
 def create_clan(db: Session, clan: schemas.ClanCreate):
@@ -80,9 +90,11 @@ def create_clan(db: Session, clan: schemas.ClanCreate):
     db.refresh(db_clan)
     return db_clan
 
+
 # Функція для отримання клану за його ID
 def get_clan(db: Session, clan_id: int):
     return db.query(models.Clan).filter(models.Clan.id == clan_id).first()
+
 
 # Функція для створення початкових балів клану
 def create_clan_score(db: Session, clan_id: int):
@@ -94,9 +106,11 @@ def create_clan_score(db: Session, clan_id: int):
     db.refresh(scores)
     return scores
 
+
 # Функція для отримання балів клану за його ID
 def get_clan_scores(db: Session, clan_id: int):
     return db.query(models.ClanScore).filter(models.ClanScore.clan_id == clan_id).first()
+
 
 # Функція для додавання балів клану
 def add_clan_point(db: Session, clan_id: int):
@@ -109,6 +123,7 @@ def add_clan_point(db: Session, clan_id: int):
     db.refresh(score_clan)
     return score_clan
 
+
 # Функція для приєднання користувача до клану
 def enter_in_clan(db: Session, clan_id: int, user_id: int):
     db_clan_enter = models.UsersClan(user_id=user_id, clan_id=clan_id)
@@ -117,9 +132,16 @@ def enter_in_clan(db: Session, clan_id: int, user_id: int):
     db.refresh(db_clan_enter)
     return db_clan_enter
 
+
 # Функція для отримання клану користувача за його ID
+# def get_clans_for_user(db: Session, user_id: int):
+#     return db.query(models.Clan).join(models.UsersClan).filter(models.UsersClan.user_id == user_id).first()
+
 def get_clans_for_user(db: Session, user_id: int):
-    return db.query(models.Clan).join(models.UsersClan).filter(models.UsersClan.user_id == user_id).first()
+    return db.query(models.Clan).join(models.UsersClan).filter(models.UsersClan.user_id == user_id).options(
+        joinedload(models.Clan.count_score)
+    ).first()
+
 
 # Функція для виходу користувача з клану
 def leave_from_clan(db: Session, user_id: int):
@@ -130,3 +152,14 @@ def leave_from_clan(db: Session, user_id: int):
         return {"msg": "Користувач покинув клан"}
     else:
         return {"msg": "Користувач не був у клані"}
+
+
+# def get_all_clan(db: Session):
+#     return db.query(models.Clan).all()
+
+def get_clans(db: Session):
+    return db.query(models.Clan).join(models.UsersClan).options(joinedload(models.Clan.count_score)).all()
+
+
+def get_image(db: Session, image_id: int):
+    return db.query(models.Image).filter(models.Image.id == image_id).first()

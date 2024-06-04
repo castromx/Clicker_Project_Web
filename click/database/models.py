@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import ForeignKey, LargeBinary
+from sqlalchemy import ForeignKey, LargeBinary, Integer
 from sqlalchemy import String
 from .database import Base
 from sqlalchemy.orm import Mapped
@@ -52,16 +52,16 @@ class Clan(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     img_id: Mapped[int] = mapped_column(ForeignKey('image.id'))
-    count_score: Mapped[int] = relationship("ClanScore", back_populates="user")
-    img: Mapped[Image] = relationship("Image", back_populates="clans")
-
+    count_score: Mapped["ClanScore"] = relationship("ClanScore", back_populates="clan")
+    img: Mapped["Image"] = relationship("Image", back_populates="clans")
 
 class ClanScore(Base):
     __tablename__ = "clan_score"
     id: Mapped[int] = mapped_column(primary_key=True)
     clan_id: Mapped[int] = mapped_column(ForeignKey("clan.id"))
-    score: Mapped[int]
-    user: Mapped[User] = relationship("Clan", back_populates="count_score")
+    score: Mapped[int] = mapped_column(Integer)
+    clan: Mapped[Clan] = relationship("Clan", back_populates="count_score")
+
 
 
 class UsersClan(Base):
