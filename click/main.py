@@ -142,7 +142,7 @@ async def read_image(image_id: int, db: Session = Depends(get_db_session)):
     if db_image is None:
         raise HTTPException(status_code=404, detail="Image not found")
 
-    temp_file_path = f"temp_image_{image_id}.png"
+    temp_file_path = f"image/temp_image_{image_id}.png"
     with open(temp_file_path, "wb") as temp_file:
         temp_file.write(db_image.data)
 
