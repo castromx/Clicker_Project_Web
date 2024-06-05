@@ -111,14 +111,12 @@ body {
     flex-direction: column;
 }
 
-
 .clan-name {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 5px;
     margin-left: 100px;
 }
-
 
 .clan-image {
     width: 50px;
@@ -127,7 +125,6 @@ body {
     margin-right: 10px;
     margin-top: -70px;
 }
-
 
 .clan-points {
     font-size: 14px;
