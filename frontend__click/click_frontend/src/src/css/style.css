@@ -1,0 +1,132 @@
+body {
+    background: linear-gradient(to bottom, #03B3FF, #FF03A1);
+    height: 100vh;
+    margin: 0; 
+    justify-content: center; 
+    align-items: center; 
+    color: white; 
+    font-family: Arial, sans-serif; 
+}
+
+.user-details {
+    text-align: right;
+    margin-right: 10px;
+}
+
+.user-score {
+    margin-top: -100px;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.user-boosts-details {
+    margin-top: -100px; /* Якщо вам потрібно зсунути контейнер наверх */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Центрує текст всередині контейнера */
+    width: fit-content; /* Контейнер має ширину, що відповідає його вмісту */
+    padding: 20px; /* Додаткові відступи всередині контейнера */
+    border: 1px solid #ddd; /* Опціонально, для візуальної чіткості контейнера */
+    background-color: #f9f9f9; /* Опціонально, для фону контейнера */
+}
+
+
+.main-photo {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+
+/* Центрування контейнера додатка */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    background-color: #f0f0f0;
+    box-sizing: border-box;
+}
+
+/* Стилі для навігації */
+.navbar {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 20px 20px 20px 20px; /* Відступи з боків і знизу */
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.navbar-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.navbar-item {
+    margin: 0 10px;
+}
+
+.navbar-item a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbar-item a:hover {
+    color: #ff6347;
+}
+
+
+.clan-container {
+    display: flex;
+    align-items: flex-start; /* Вирівнювання елементів від початку контейнера */
+    margin: 20px auto;
+    background-color: #797979;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 200;
+    max-width: 600px;
+    min-width: 300px;
+}
+
+.clan-info {
+    display:grid;
+    margin-top: 5px;
+    flex-direction: column;
+}
+
+.clan-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 100px;
+}
+
+.clan-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: -70px;
+}
+
+.clan-points {
+    font-size: 14px;
+    margin-left: 100px;
+}
