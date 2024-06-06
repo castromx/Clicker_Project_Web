@@ -42,6 +42,9 @@ async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_se
 async def get_user(id: int, db: Session = Depends(get_db_session)) -> schemas.UserAccount:
     return crud.get_user(db, id)
 
+@app.get("/get_all_users")
+async def get_all_users(db: Session = Depends(get_db_session)):
+    return crud.get_all_users(db)
 
 @app.get("/get_user_score")
 async def get_user_score(user_id: int, db: Session = Depends(get_db_session)):
@@ -142,8 +145,13 @@ async def read_image(image_id: int, db: Session = Depends(get_db_session)):
     if db_image is None:
         raise HTTPException(status_code=404, detail="Image not found")
 
-    temp_file_path = f"image/temp_image_{image_id}.png"
+    temp_file_path = f"temp_image_{image_id}.png"
     with open(temp_file_path, "wb") as temp_file:
         temp_file.write(db_image.data)
 
     return FileResponse(temp_file_path, media_type='image/png', filename=f"image_{image_id}.png")
+
+
+@app.get("/clan_members")
+async def get_clan_member(clan_id: int, db: Session = Depends(get_db_session)):
+    return crud.get_clan_members(db, clan_id)

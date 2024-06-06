@@ -19,6 +19,8 @@ def create_user(db: Session, user: schemas.UserAccount):
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
+def get_all_users(db: Session):
+    return db.query(models.User).all()
 
 # Функція для створення початкових балів користувача
 def create_user_score(db: Session, user_id: int):
@@ -163,3 +165,7 @@ def get_clans(db: Session):
 
 def get_image(db: Session, image_id: int):
     return db.query(models.Image).filter(models.Image.id == image_id).first()
+
+
+def get_clan_members(db: Session, clan_id: int):
+    return db.query(models.User).join(models.UsersClan).filter(models.UsersClan.clan_id == clan_id).all()

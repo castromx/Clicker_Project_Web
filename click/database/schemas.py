@@ -59,6 +59,17 @@ class Clan(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "name": "Example Clan",
+                "img_id": 123,
+                "count_score": {
+                    "clan_id": 1,
+                    "score": 1000
+                }
+            }
+        }
 
 
 class ImageBase(BaseModel):
