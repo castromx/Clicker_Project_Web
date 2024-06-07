@@ -130,3 +130,22 @@ body {
     font-size: 14px;
     margin-left: 100px;
 }
+
+.clan-members-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.248);
+    border-bottom: 1px solid #ccc;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.close-button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
