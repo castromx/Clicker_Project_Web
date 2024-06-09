@@ -7,7 +7,9 @@ const ClanMembersMenu = ({ members, onClose }) => {
             <h2>Clan Members</h2>
             <ul>
                 {members.map(member => (
-                    <li key={member.id}>{member.name}</li>
+                    <li key={member.id}>
+                        {member.name} - {member.scores ? member.scores.score : 'N/A'}
+                    </li>
                 ))}
             </ul>
         </div>

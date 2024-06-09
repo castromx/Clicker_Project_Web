@@ -26,10 +26,12 @@ const ClanPage = () => {
                 console.error('Error fetching clan members:', error);
             });
     };
+    
 
     const handleCloseMenu = () => {
         setClanMembers(null);
     };
+    
 
     return (
         <div className="content-container">
