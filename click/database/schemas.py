@@ -2,18 +2,19 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class UserAccount(BaseModel):
-    name: str  # Ім'я користувача
-    tg_id: int  # Telegram ID користувача
-    register_at: datetime  # Дата реєстрації користувача
-    last_login_at: datetime  # Дата останнього входу користувача
+class UserScores(BaseModel):
+    score: int  # Кількість балів користувача
 
     class Config:
         orm_mode = True
 
 
-class UserScores(BaseModel):
-    score: int  # Кількість балів користувача
+class UserAccount(BaseModel):
+    name: str  # Ім'я користувача
+    tg_id: int  # Telegram ID користувача
+    register_at: datetime  # Дата реєстрації користувача
+    last_login_at: datetime  # Дата останнього входу користувача
+    scores: UserScores
 
     class Config:
         orm_mode = True

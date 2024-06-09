@@ -12,7 +12,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     tg_id: Mapped[int] = mapped_column(unique=True)
-    scores: Mapped[int] = relationship("UserScore", back_populates="user")
+    scores: Mapped["ClanScore"] = relationship("UserScore", back_populates="user")
     clans: Mapped[int] = relationship("UsersClan", back_populates="user")
     boosts: Mapped[int] = relationship("Boosts", back_populates="user")
     register_at: Mapped[datetime]

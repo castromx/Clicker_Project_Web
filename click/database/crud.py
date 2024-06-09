@@ -19,6 +19,7 @@ def create_user(db: Session, user: schemas.UserAccount):
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
+
 def get_all_users(db: Session):
     return db.query(models.User).all()
 
@@ -168,4 +169,4 @@ def get_image(db: Session, image_id: int):
 
 
 def get_clan_members(db: Session, clan_id: int):
-    return db.query(models.User).join(models.UsersClan).filter(models.UsersClan.clan_id == clan_id).all()
+    return db.query(models.User).join(models.UsersClan).filter(models.UsersClan.clan_id == clan_id).options(joinedload(models.User.scores)).all()
