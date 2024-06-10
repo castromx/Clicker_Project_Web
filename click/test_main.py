@@ -1,9 +1,7 @@
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-from main import app  # Import your FastAPI app
-
-# Mocking the dependencies
+from main import app
 from database.database import get_db_session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -14,14 +12,12 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 @pytest.fixture(scope="module")
 def db():
-    # Create the database and tables
     models.Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
     try:
         yield db
     finally:
         db.close()
-    # Drop the tables
     models.Base.metadata.drop_all(bind=engine)
 
 @pytest.fixture(scope="module")
