@@ -132,15 +132,16 @@ body {
 }
 
 .clan-members-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    margin: 20px auto;
     background: rgba(255, 255, 255, 0.248);
-    border-bottom: 1px solid #ccc;
-    z-index: 1000;
     padding: 10px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    min-width: 300px;
 }
+
+
 
 .close-button {
     background: red;
