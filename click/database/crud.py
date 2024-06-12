@@ -152,9 +152,9 @@ def leave_from_clan(db: Session, user_id: int):
     if user_clan_record:
         db.delete(user_clan_record)
         db.commit()
-        return {"msg": "Користувач покинув клан"}
+        return {"msg": "The user has left the clan"}
     else:
-        return {"msg": "Користувач не був у клані"}
+        return None
 
 
 # def get_all_clan(db: Session):

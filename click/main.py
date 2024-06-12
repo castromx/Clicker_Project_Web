@@ -116,8 +116,8 @@ async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db
 @app.post("/enter_in_clan")
 async def enter_in_clan(user_id: int, clan_id: int, db: Session = Depends(get_db_session)):
     if crud.get_clans_for_user(db, user_id):
-        return {"Вам потрібно вийти з попереднього клану, щоб приєднатись у цей"}
-    return crud.enter_in_clan(db, user_id, clan_id)
+        raise HTTPException(status_code=422, detail="Вам потрібно вийти з попереднього клану, щоб приєднатись у цей")
+    return crud.enter_in_clan(db, clan_id, user_id)
 
 
 @app.get("/get_user_clan")
@@ -127,7 +127,11 @@ async def get_user_clan(user_id: int, db: Session = Depends(get_db_session)):
 
 @app.delete("/leave_from_clan")
 async def leave_from_clan(user_id: int, db: Session = Depends(get_db_session)):
-    return crud.leave_from_clan(db, user_id)
+    result = crud.leave_from_clan(db, user_id)
+    if result:
+        return result
+    else:
+        raise HTTPException(status_code=404, detail="The user was not in a clan")
 
 
 @app.post("/add_point_clan")
