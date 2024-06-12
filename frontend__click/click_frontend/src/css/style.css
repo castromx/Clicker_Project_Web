@@ -100,7 +100,8 @@ body {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 200;
+    width: 80%; /* Ширина контейнера, можна змінити на потрібну */
+    padding: 20px; /* Відступи всередині контейнера */
     max-width: 600px;
     min-width: 300px;
 }
@@ -141,12 +142,22 @@ body {
     min-width: 300px;
 }
 
-
-
 .close-button {
     background: red;
     color: white;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
+}
+
+.EnterClan {
+    background-color: rgb(35, 237, 45);
+    border-radius: 5px;
+    border: none; /* прибираємо обводку */
+}
+
+.ExitClan {
+    background-color: rgb(236, 104, 104);
+    border-radius: 5px;
+    border: none; /* прибираємо обводку */
 }

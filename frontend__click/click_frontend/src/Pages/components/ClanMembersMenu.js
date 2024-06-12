@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ClanMembersMenu = ({ members, onClose }) => {
+const ClanMembersMenu = ({ members, onClose, onEnterClan, onExitClan, clanId }) => {
     return (
         <div className="clan-members-menu">
             <button className="close-button" onClick={onClose}>Close</button>
@@ -12,6 +12,8 @@ const ClanMembersMenu = ({ members, onClose }) => {
                     </li>
                 ))}
             </ul>
+            <button className='EnterClan' onClick={() => onEnterClan(clanId)}>Enter in clan</button>
+            <button className='ExitClan' onClick={onExitClan}>Exit from clan</button>
         </div>
     );
 };
