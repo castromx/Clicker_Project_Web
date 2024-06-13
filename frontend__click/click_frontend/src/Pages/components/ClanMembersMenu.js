@@ -8,7 +8,7 @@ const ClanMembersMenu = ({ members, onClose, onEnterClan, onExitClan, clanId }) 
             <ul>
                 {members.map(member => (
                     <li key={member.id}>
-                        {member.name} - {member.scores ? member.scores.score : 'N/A'}
+                        {member.name} - {member.scores.score}
                     </li>
                 ))}
             </ul>

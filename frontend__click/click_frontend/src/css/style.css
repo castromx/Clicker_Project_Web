@@ -153,11 +153,11 @@ body {
 .EnterClan {
     background-color: rgb(35, 237, 45);
     border-radius: 5px;
-    border: none; /* прибираємо обводку */
+    border: none;
 }
 
 .ExitClan {
     background-color: rgb(236, 104, 104);
     border-radius: 5px;
-    border: none; /* прибираємо обводку */
+    border: none;
 }
