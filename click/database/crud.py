@@ -170,3 +170,12 @@ def get_image(db: Session, image_id: int):
 
 def get_clan_members(db: Session, clan_id: int):
     return db.query(models.User).join(models.UsersClan).filter(models.UsersClan.clan_id == clan_id).options(joinedload(models.User.scores)).all()
+
+
+def get_leader_users(db: Session):
+    return (db.query(models.User).join(models.UserScore, models.User.id == models.UserScore.user_id).order_by(models.UserScore.score.desc()).options(joinedload(models.User.scores)).all())
+
+
+def get_leader_clans(db: Session):
+    return (db.query(models.Clan).join(models.ClanScore, models.Clan.id == models.ClanScore.clan_id).order_by(models.ClanScore.score.desc()).options(joinedload(models.Clan.count_score)).all())
+

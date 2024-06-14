@@ -159,3 +159,11 @@ async def read_image(image_id: int, db: Session = Depends(get_db_session)):
 @app.get("/clan_members")
 async def get_clan_member(clan_id: int, db: Session = Depends(get_db_session)):
     return crud.get_clan_members(db, clan_id)
+
+@app.get("/get_leaderboard_user")
+async def get_leaderboard_user(db: Session = Depends(get_db_session)):
+    return crud.get_leader_users(db)
+
+@app.get("/get_leaderboard_clan")
+async def get_leaderboard_user(db: Session = Depends(get_db_session)):
+    return crud.get_leader_clans(db)
