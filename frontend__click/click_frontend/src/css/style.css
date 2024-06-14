@@ -161,3 +161,43 @@ body {
     border-radius: 5px;
     border: none;
 }
+
+.clan-info {
+    display:grid;
+    margin-top: 5px;
+    flex-direction: column;
+}
+
+.user-container {
+    display: flex;
+    align-items: flex-start; /* Вирівнювання елементів від початку контейнера */
+    margin: 20px auto;
+    background-color: #797979;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Ширина контейнера, можна змінити на потрібну */
+    padding: 20px; /* Відступи всередині контейнера */
+    max-width: 600px;
+    min-width: 300px;
+}
+
+.user-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 100px;
+}
+
+.user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: -70px;
+}
+
+.user-points {
+    font-size: 14px;
+    margin-left: 100px;
+}

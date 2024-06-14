@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Clan = ({ clansData, onClickClan }) => {
-    // Перетворимо одиночний об'єкт на масив для уніфікації обробки
     const clans = Array.isArray(clansData) ? clansData : [clansData];
 
     return (
