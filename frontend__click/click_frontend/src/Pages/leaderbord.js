@@ -6,6 +6,7 @@ import Clan from './components/Clan';
 const LeaderBoardPage = () => {
     const [userData, setUserData] = useState(null);
     const [clanData, setClanData] = useState(null);
+    const [selectedTab, setSelectedTab] = useState('users'); // 'users' за замовчуванням
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/get_leaderboard_user')
@@ -24,11 +25,25 @@ const LeaderBoardPage = () => {
             });
     }, []);
 
+    const handleTabClick = (tab) => {
+        setSelectedTab(tab);
+    };
 
     return (
         <div className="content-container">
-            {userData && <UserCard userData={userData} />}
-            {clanData && <Clan clansData={clanData} />}
+            <div className='button-container'>
+                <div className="tab-buttons">
+                    <button onClick={() => handleTabClick('users')} className={selectedTab === 'users' ? 'active' : ''}>
+                        Користувачі
+                    </button>
+                    <span className="divider">|</span>
+                    <button onClick={() => handleTabClick('clans')} className={selectedTab === 'clans' ? 'active' : ''}>
+                        Клани
+                    </button>
+                </div>
+            </div>
+                {selectedTab === 'users' && userData && <UserCard userData={userData} />}
+                {selectedTab === 'clans' && clanData && <Clan clansData={clanData} />}
         </div>
     );
 };

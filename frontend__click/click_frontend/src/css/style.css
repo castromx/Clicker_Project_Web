@@ -201,3 +201,46 @@ body {
     font-size: 14px;
     margin-left: 100px;
 }
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Вирівнювання по центру */
+    margin: 20px auto;
+    background-color: #797979;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 30%; /* Ширина контейнера, можна змінити на потрібну */
+    height: auto; /* Висота контейнера */
+}
+
+.tab-buttons button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    background-color: #ffffff00;
+    border: 1px solid #ffffff00;
+    border-radius: 4px;
+    }
+    
+.tab-buttons button.active {
+    background-color: #ffffff00;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+.tab-text {
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: default;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    white-space: nowrap; /* Забезпечує відображення тексту в одну лінію */
+}
+
+.divider {
+    margin: 0 10px;
+    color: #000;
+}

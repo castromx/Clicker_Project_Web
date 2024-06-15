@@ -12,7 +12,7 @@ const ClanPage = () => {
     const [userId] = useState(1);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/get_all_clans')
+        axios.get('http://127.0.0.1:8000/get_leaderboard_clan')
             .then(response => {
                 setClanData(response.data);
             })
