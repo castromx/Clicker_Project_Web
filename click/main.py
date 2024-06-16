@@ -165,5 +165,45 @@ async def get_leaderboard_user(db: Session = Depends(get_db_session)):
     return crud.get_leader_users(db)
 
 @app.get("/get_leaderboard_clan")
-async def get_leaderboard_user(db: Session = Depends(get_db_session)):
+async def get_leaderboard_clan(db: Session = Depends(get_db_session)):
     return crud.get_leader_clans(db)
+
+
+@app.post("/div_point")
+async def div_user_point(user_id: int, price: int, db: Session = Depends(get_db_session)):
+    point = crud.get_user_scores(db, user_id)
+    point = point.score
+    if point > price:
+        return crud.div_points(db, user_id, price)
+    return HTTPException(status_code=422, detail="You have not enough points")
+
+@app.post("/buy_fill_char_count")
+async def buy_fill_char(user_id: int, price: int, db: Session = Depends(get_db_session)):
+    point = crud.get_user_scores(db, user_id)
+    point = point.score
+    price = point * 10
+    if point > price:
+        crud.div_points(db, user_id, price)
+        return crud.buy_fill_char(db, user_id)
+    return HTTPException(status_code=422, detail="You have not enough points")
+
+@app.post("/buy_charge_count")
+async def buy_charge(user_id: int, price: int, db: Session = Depends(get_db_session)):
+    point = crud.get_user_scores(db, user_id)
+    point = point.score
+    price = point * 10
+    if point > price:
+        crud.div_points(db, user_id, price)
+        return crud.buy_charge_count(db, user_id)
+    return HTTPException(status_code=422, detail="You have not enough points")
+
+
+@app.post("/buy_mine_coint")
+async def buy_mine(user_id: int, price: int, db: Session = Depends(get_db_session)):
+    point = crud.get_user_scores(db, user_id)
+    point = point.score
+    price = point * 10
+    if point > price:
+        crud.div_points(db, user_id, price)
+        return crud.buy_mine_coint(db, user_id)
+    return HTTPException(status_code=422, detail="You have not enough points")

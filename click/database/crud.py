@@ -179,3 +179,35 @@ def get_leader_users(db: Session):
 def get_leader_clans(db: Session):
     return (db.query(models.Clan).join(models.ClanScore, models.Clan.id == models.ClanScore.clan_id).order_by(models.ClanScore.score.desc()).options(joinedload(models.Clan.count_score)).all())
 
+def div_points(db: Session, user_id: int, price: int):
+    points = get_user_scores(db, user_id)
+    points.score -= price
+    db.commit()
+    return points.score
+
+
+def buy_fill_char(db: Session, user_id: int):
+    bosts = get_user_boosts(db, user_id)
+    fillchar = bosts.fill_char_count
+    if fillchar < 3:
+        bosts.fill_char_count += 1
+        db.commit()
+        return bosts.fill_char_count
+
+
+def buy_charge_count(db: Session, user_id: int):
+    bosts = get_user_boosts(db, user_id)
+    charge = bosts.charge_count
+    if charge < 3:
+        bosts.charge_count += 1
+        db.commit()
+        return bosts.charge_count
+
+
+def buy_mine_coint(db: Session, user_id: int):
+    bosts = get_user_boosts(db, user_id)
+    mine_c = bosts.mine_coint
+    if mine_c < 3:
+        bosts.mine_coint += 1
+        db.commit()
+        return bosts.mine_coint
