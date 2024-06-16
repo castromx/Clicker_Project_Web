@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import UserBoostsDetails from './components/BoostsDetail';
+import BuyBoosts from './components/BuyBoosts';
 
 const BoostsPage = () => {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
-        // Запит до сервера для отримання даних користувача
         axios.get('http://127.0.0.1:8000/get_user_boosts', {
             params: { user_id: 1 }
         })
@@ -21,6 +21,7 @@ const BoostsPage = () => {
     return (
         <div>
             {userData && <UserBoostsDetails userData={userData} />}
+            {userData && <BuyBoosts boostsData={userData} />}
         </div>
     );
 };

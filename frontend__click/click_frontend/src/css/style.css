@@ -244,3 +244,40 @@ body {
     margin: 0 10px;
     color: #000;
 }
+
+.buy-boosts-details {
+    margin-top: 50px; /* Зсув контейнера наверх */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Центрує текст всередині контейнера */
+    width: 500px; /* Контейнер має ширину, що відповідає його вмісту */
+    padding: 20px; /* Додаткові відступи всередині контейнера */
+    border: 1px solid #ddd; /* Для візуальної чіткості контейнера */
+    background-color: rgba(255, 255, 255, 0.1); /* Напівпрозорий фон */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fill-char-count-class, .mine-coint-class, .charge-count-class {
+    margin-bottom: 20px; /* Відступ між блоками */
+    background-color: rgba(255, 255, 255, 0.2); /* Напівпрозорий фон */
+    padding: 10px;
+    border-radius: 10px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boosts-button-class {
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.boosts-button-class:hover {
+    background-color: #ff4500;
+}
