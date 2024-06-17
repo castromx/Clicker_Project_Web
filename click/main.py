@@ -178,7 +178,7 @@ async def div_user_point(user_id: int, price: int, db: Session = Depends(get_db_
     return HTTPException(status_code=422, detail="You have not enough points")
 
 @app.post("/buy_fill_char_count")
-async def buy_fill_char(user_id: int, price: int, db: Session = Depends(get_db_session)):
+async def buy_fill_char(user_id: int, db: Session = Depends(get_db_session)):
     point = crud.get_user_scores(db, user_id)
     point = point.score
     price = point * 10
@@ -188,7 +188,7 @@ async def buy_fill_char(user_id: int, price: int, db: Session = Depends(get_db_s
     return HTTPException(status_code=422, detail="You have not enough points")
 
 @app.post("/buy_charge_count")
-async def buy_charge(user_id: int, price: int, db: Session = Depends(get_db_session)):
+async def buy_charge(user_id: int, db: Session = Depends(get_db_session)):
     point = crud.get_user_scores(db, user_id)
     point = point.score
     price = point * 10
@@ -199,7 +199,7 @@ async def buy_charge(user_id: int, price: int, db: Session = Depends(get_db_sess
 
 
 @app.post("/buy_mine_coint")
-async def buy_mine(user_id: int, price: int, db: Session = Depends(get_db_session)):
+async def buy_mine(user_id: int, db: Session = Depends(get_db_session)):
     point = crud.get_user_scores(db, user_id)
     point = point.score
     price = point * 10
