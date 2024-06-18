@@ -211,3 +211,15 @@ def buy_mine_coint(db: Session, user_id: int):
         bosts.mine_coint += 1
         db.commit()
         return bosts.mine_coint
+
+def create_user_achivments(db: Session, user_id: int):
+    user = get_user(db, user_id)
+    user_id = user.id
+    achivments = models.UserAchivments(user_id=user_id, up_50k=0, up_100k=0, up_500k=0, up_1million=0)
+    db.add(achivments)
+    db.commit()
+    db.refresh(achivments)
+    return achivments
+
+def get_user_achivments(db: Session, user_id: int):
+    return db.query(models.UserAchivments).filter(models.UserAchivments.user_id == user_id).first()

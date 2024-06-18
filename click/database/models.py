@@ -15,6 +15,7 @@ class User(Base):
     scores: Mapped["ClanScore"] = relationship("UserScore", back_populates="user")
     clans: Mapped[int] = relationship("UsersClan", back_populates="user")
     boosts: Mapped[int] = relationship("Boosts", back_populates="user")
+    achivments: Mapped[int] = relationship("UserAchivments", back_populates="user")
     register_at: Mapped[datetime]
     last_login_at: Mapped[datetime]
 
@@ -70,3 +71,13 @@ class UsersClan(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     clan_id: Mapped[int] = mapped_column(ForeignKey("clan.id"))
     user: Mapped[User] = relationship("User", back_populates="clans")
+
+class UserAchivments(Base):
+    __tablename__ = "user_achivments"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
+    up_50k: Mapped[bool]
+    up_100k: Mapped[bool]
+    up_500k: Mapped[bool]
+    up_1million: Mapped[bool]
+    user: Mapped[User] = relationship("User", back_populates="achivments")
