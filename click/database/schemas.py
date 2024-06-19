@@ -81,3 +81,11 @@ class ImageBase(BaseModel):
 class Image(ImageBase):
     class Config:
         orm_mode = True
+
+
+class Achivments(BaseModel):
+    id: int
+    up_100k: bool
+    up_1million: bool
+    up_50k: bool
+    up_500k: bool
