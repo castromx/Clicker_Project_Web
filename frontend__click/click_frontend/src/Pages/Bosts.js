@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import UserBoostsDetails from './components/BoostsDetail';
 import UserachivmDetails from './components/Achivments';
 import BuyBoosts from './components/BuyBoosts';
 
@@ -30,7 +29,6 @@ const BoostsPage = () => {
 
     return (
         <div>
-            {userData && <UserBoostsDetails userData={userData} />}
             {userData && <BuyBoosts boostsData={userData} />}
             {AchivmData && <UserachivmDetails achvmData={AchivmData} />}
         </div>
