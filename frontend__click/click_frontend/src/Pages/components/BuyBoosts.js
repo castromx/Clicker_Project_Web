@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { FxemojiBattery } from '../Icons/icons';
 const BuyBoosts = ({ boostsData }) => {
     return (
         <div className="buy-boosts-details">
