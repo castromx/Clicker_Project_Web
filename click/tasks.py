@@ -1,14 +1,15 @@
 from celery import Celery
-from fastapi import APIRouter, BackgroundTasks
+from database import database, crud, schemas
+from database.database import DATABASE_URL, engine, Session
+DATABASE_URL = DATABASE_URL
+engine = engine
+SessionLocal = Session
 
-celery = Celery('tasks', broker='redis://localhost:6379/')
-
-router = APIRouter(prefix='/tasks', tags=['tasks'])
+celery = Celery('tasks', broker='redis://localhost:6379/0')
 
 @celery.task
-def add_user_score(count_in_db_charge, charge):
-    return count_in_db_charge + charge
-
-@router.post('/add_user_charge')
-async def add_user_charge(backgound_tasks: BackgroundTasks, count_in_db_charge, charge):
-    backgound_tasks.add_task(add_user_score, count_in_db_charge, charge)
+def add_point_task(user_id: int, count: int):
+    db = SessionLocal()
+    score = crud.add_point(db, count, user_id)
+    db.close()
+    return score

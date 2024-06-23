@@ -1,8 +1,7 @@
-import aioredis
 from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-
+from .tasks import add_point_task
 from database import schemas, models, crud
 from sqlalchemy.orm import Session
 from database.database import get_db_session
@@ -43,9 +42,11 @@ async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_se
 async def get_user(id: int, db: Session = Depends(get_db_session)) -> schemas.UserAccount:
     return crud.get_user(db, id)
 
+
 @app.get("/get_all_users")
 async def get_all_users(db: Session = Depends(get_db_session)):
     return crud.get_all_users(db)
+
 
 @app.get("/get_user_score")
 async def get_user_score(user_id: int, db: Session = Depends(get_db_session)):
@@ -139,6 +140,7 @@ async def leave_from_clan(user_id: int, db: Session = Depends(get_db_session)):
 async def add_point_clan(clan_id: int, db: Session = Depends(get_db_session)):
     return crud.add_clan_point(db, clan_id)
 
+
 @app.get('/get_all_clans')
 async def get_all_clans(db: Session = Depends(get_db_session)):
     return crud.get_clans(db)
@@ -161,9 +163,11 @@ async def read_image(image_id: int, db: Session = Depends(get_db_session)):
 async def get_clan_member(clan_id: int, db: Session = Depends(get_db_session)):
     return crud.get_clan_members(db, clan_id)
 
+
 @app.get("/get_leaderboard_user")
 async def get_leaderboard_user(db: Session = Depends(get_db_session)):
     return crud.get_leader_users(db)
+
 
 @app.get("/get_leaderboard_clan")
 async def get_leaderboard_clan(db: Session = Depends(get_db_session)):
@@ -178,6 +182,7 @@ async def div_user_point(user_id: int, price: int, db: Session = Depends(get_db_
         return crud.div_points(db, user_id, price)
     return HTTPException(status_code=422, detail="You have not enough points")
 
+
 @app.post("/buy_fill_char_count")
 async def buy_fill_char(user_id: int, db: Session = Depends(get_db_session)):
     point = crud.get_user_scores(db, user_id)
@@ -187,6 +192,7 @@ async def buy_fill_char(user_id: int, db: Session = Depends(get_db_session)):
         crud.div_points(db, user_id, price)
         return crud.buy_fill_char(db, user_id)
     return HTTPException(status_code=422, detail="You have not enough points")
+
 
 @app.post("/buy_charge_count")
 async def buy_charge(user_id: int, db: Session = Depends(get_db_session)):
@@ -209,8 +215,14 @@ async def buy_mine(user_id: int, db: Session = Depends(get_db_session)):
         return crud.buy_mine_coint(db, user_id)
     return HTTPException(status_code=422, detail="You have not enough points")
 
+
 @app.get("/get_user_achivments", response_model=schemas.Achivments)
 async def get_user_achivments(user_id: int, db: Session = Depends(get_db_session)):
     a = crud.get_user_achivments(db, user_id)
     print(a)
     return crud.get_user_achivments(db, user_id)
+
+@router.post('/add_point/{user_id}')
+async def add_point_endpoint(background_tasks: BackgroundTasks, user_id: int, count: int):
+    background_tasks.add_task(add_point_task, user_id, count)
+    return {"message": "Add point task has been added to the queue."}
