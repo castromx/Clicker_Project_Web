@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File
+from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File, BackgroundTasks
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from .tasks import add_point_task
