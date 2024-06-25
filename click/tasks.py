@@ -5,7 +5,7 @@ DATABASE_URL = DATABASE_URL
 engine = engine
 SessionLocal = Session
 
-celery = Celery('tasks', broker='redis://localhost:6379/0')
+celery = Celery('tasks', broker='redis://localhost:6379')
 
 @celery.task
 def add_point_task(user_id: int, count: int):
