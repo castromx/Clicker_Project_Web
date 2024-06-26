@@ -179,6 +179,7 @@ def get_leader_users(db: Session):
 def get_leader_clans(db: Session):
     return (db.query(models.Clan).join(models.ClanScore, models.Clan.id == models.ClanScore.clan_id).order_by(models.ClanScore.score.desc()).options(joinedload(models.Clan.count_score)).all())
 
+
 def div_points(db: Session, user_id: int, price: int):
     points = get_user_scores(db, user_id)
     points.score -= price
@@ -212,6 +213,7 @@ def buy_mine_coint(db: Session, user_id: int):
         db.commit()
         return bosts.mine_coint
 
+
 def create_user_achivments(db: Session, user_id: int):
     user = get_user(db, user_id)
     user_id = user.id
@@ -220,6 +222,7 @@ def create_user_achivments(db: Session, user_id: int):
     db.commit()
     db.refresh(achivments)
     return achivments
+
 
 def get_user_achivments(db: Session, user_id: int):
     return db.query(models.UserAchivments).filter(models.UserAchivments.user_id == user_id).first()

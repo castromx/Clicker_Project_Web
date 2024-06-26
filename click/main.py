@@ -1,7 +1,7 @@
 from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File, BackgroundTasks
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from tasks import add_point_task
+from tasks import add_point_task, add_charge_count
 from database import schemas, models, crud
 from sqlalchemy.orm import Session
 from database.database import get_db_session
@@ -225,4 +225,9 @@ async def get_user_achivments(user_id: int, db: Session = Depends(get_db_session
 @app.post('/add_celery_point/{user_id}')
 async def add_point_endpoint(background_tasks: BackgroundTasks, user_id: int, count: int):
     add_point_task.delay(user_id, count)
+    return {"message": "Add point tadsk has been added to the queue."}
+
+@app.post('/add_celery_charge/{user_id}')
+async def add_charge_count(background_tasks: BackgroundTasks, user_id: int, count: int):
+    add_charge_count.delay(user_id, count)
     return {"message": "Add point tadsk has been added to the queue."}

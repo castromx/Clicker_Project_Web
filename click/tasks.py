@@ -1,4 +1,6 @@
 from celery import Celery
+
+from click.database.crud import get_user_boosts
 from database import database, crud, schemas
 from database.database import DATABASE_URL, engine, Session
 DATABASE_URL = DATABASE_URL
@@ -13,3 +15,10 @@ def add_point_task(user_id: int, count: int):
     score = crud.add_point(db, count, user_id)
     db.close()
     return score
+
+@celery.task
+def add_charge_count(db: Session, user_id: int):
+    bosts = get_user_boosts(db, user_id)
+    bosts.charge_count += 1
+    db.commit()
+    return bosts.charge_count
