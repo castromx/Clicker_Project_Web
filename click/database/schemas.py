@@ -6,7 +6,7 @@ class UserScores(BaseModel):
     score: int  # Кількість балів користувача
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserAccount(BaseModel):
@@ -17,14 +17,14 @@ class UserAccount(BaseModel):
     scores: UserScores
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ClanScores(BaseModel):
     score: int  # Кількість балів клану
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Boosts(BaseModel):
@@ -34,7 +34,7 @@ class Boosts(BaseModel):
     mine_coint: int  # Кількість монет, здобутих при майнінгу
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class MainPage(BaseModel):
@@ -43,7 +43,7 @@ class MainPage(BaseModel):
     boosts: Boosts  # Підсилення користувача
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Модель для створення клану
@@ -59,7 +59,7 @@ class Clan(BaseModel):
     img_id: int  # ID зображення клану
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         schema_extra = {
             "example": {
                 "id": 1,
@@ -80,7 +80,7 @@ class ImageBase(BaseModel):
 
 class Image(ImageBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Achivments(BaseModel):
