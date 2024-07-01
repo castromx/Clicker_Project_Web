@@ -217,5 +217,4 @@ async def buy_mine(user_id: int, db: Session = Depends(get_db_session)):
 
 @app.get("/get_user_achivments", response_model=schemas.Achivments)
 async def get_user_achivments(user_id: int, db: Session = Depends(get_db_session)):
-    a = crud.get_user_achivments(db, user_id)
     return crud.get_user_achivments(db, user_id)
