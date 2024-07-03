@@ -16,8 +16,8 @@ def add_point_task(user_id: int, count: int):
     return score
 
 @celery.task
-def add_charge_count(db: Session, user_id: int, user.boosts.point):
+def add_charge_count(db: Session, user_id: int):
     bosts = crud.get_user_boosts(db, user_id)
-    bosts.charge_count += user.boosts.point
+    bosts.charge_count += 1
     db.commit()
     return bosts.charge_count
