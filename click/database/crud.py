@@ -226,3 +226,15 @@ def create_user_achivments(db: Session, user_id: int):
 
 def get_user_achivments(db: Session, user_id: int):
     return db.query(models.UserAchivments).filter(models.UserAchivments.user_id == user_id).first()
+
+
+
+def upd_user_last_login(db: Session, user: schemas.UserAccount):
+    time_now = datetime.utcnow()
+    user_data = user.dict(exclude={"last_login_at"})
+    db_user = models.User(**user_data, last_login_at=time_now)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
