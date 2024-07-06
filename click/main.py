@@ -9,15 +9,6 @@ from database.database import get_db_session
 from task_router import router
 app = FastAPI()
 app.include_router(router)
-from .database.crud import buy_charge_count
-async def recharge_players(db: Session = Depends(get_db_session)):
-    while True:
-        buy_charge_count(db=db, user_id=1)
-        await asyncio.sleep(60)
-
-@app.on_event("startup")
-async def startup_event():
-    recharge_players()
 
 
 @app.get("/")
