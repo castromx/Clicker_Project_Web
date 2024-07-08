@@ -81,3 +81,11 @@ class UserAchivments(Base):
     up_500k: Mapped[bool]
     up_1million: Mapped[bool]
     user: Mapped[User] = relationship("User", back_populates="achivments")
+
+
+class Charge(Base):
+    __tablename__ = "charge"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    charge: Mapped[int]
+    user: Mapped[Boosts] = relationship("Boosts", back_populates="charge_count")
+    
