@@ -16,6 +16,7 @@ class User(Base):
     clans: Mapped[int] = relationship("UsersClan", back_populates="user")
     boosts: Mapped[int] = relationship("Boosts", back_populates="user")
     achivments: Mapped[int] = relationship("UserAchivments", back_populates="user")
+    charges: Mapped[int] = relationship("UserCharges", back_populates="user")
     register_at: Mapped[datetime]
     last_login_at: Mapped[datetime]
 
@@ -85,7 +86,7 @@ class UserAchivments(Base):
 
 class Charge(Base):
     __tablename__ = "charge"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    charge: Mapped[int]
-    user: Mapped[Boosts] = relationship("Boosts", back_populates="charge_count")
-    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    charge: Mapped[int] = mapped_column(Integer)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    boost: Mapped[User] = relationship("User", back_populates="charges")
