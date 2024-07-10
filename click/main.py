@@ -35,6 +35,7 @@ async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_se
     crud.create_user_score(db, user.id)
     crud.create_user_boost(db, user.id)
     crud.create_user_achivments(db, user.id)
+    crud.create_user_charge(db, user.id)
     return user
 
 
@@ -105,7 +106,6 @@ async def read_clan(clan_id: int, db: Session = Depends(get_db_session)):
     if db_clan is None:
         raise HTTPException(status_code=404, detail="Clan not found")
     return db_clan
-
 
 
 @app.post("/uploadfile/")
@@ -219,3 +219,13 @@ async def buy_mine(user_id: int, db: Session = Depends(get_db_session)):
 @app.get("/get_user_achivments", response_model=schemas.Achivments)
 async def get_user_achivments(user_id: int, db: Session = Depends(get_db_session)):
     return crud.get_user_achivments(db, user_id)
+
+@app.post("/fill_charge_count")
+async def fill_charge(user_id: int, point: int, db: Session = Depends(get_db_session)):
+    boosts = crud.get_user_boosts(db, user_id)
+    charge_lvl = boosts.charge_count
+    charge = crud.get_user_charge(db, user_id)
+    max_charge = charge_lvl * 5000
+    if charge < max_charge:
+        crud.add_charge_point(db, user_id, point)
+    return {"fill": "full"}

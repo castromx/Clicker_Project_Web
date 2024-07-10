@@ -228,13 +228,23 @@ def get_user_achivments(db: Session, user_id: int):
     return db.query(models.UserAchivments).filter(models.UserAchivments.user_id == user_id).first()
 
 
-
-def upd_user_last_login(db: Session, user: schemas.UserAccount):
-    time_now = datetime.utcnow()
-    user_data = user.dict(exclude={"last_login_at"})
-    db_user = models.User(**user_data, last_login_at=time_now)
-    db.add(db_user)
+def create_user_charge(db: Session, user_id: int):
+    user = get_user(db, user_id)
+    user_id = user.id
+    charge = models.UserCharges(user_id=user_id, charge=5000)
+    db.add(charge)
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(charge)
+    return charge
 
+
+def get_user_charge(db: Session, user_id: int):
+    return db.query(models.UserCharges).filter(models.UserCharges.user_id == user_id).first()
+
+def add_charge_point(db: Session, user_id: int, points: int):
+    charge = get_user_charge(db, user_id)
+    charge_c = charge.charge + points
+    db.add(charge_c)
+    db.commit()
+    db.refresh(charge_c)
+    return charge.charge

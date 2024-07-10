@@ -84,9 +84,9 @@ class UserAchivments(Base):
     user: Mapped[User] = relationship("User", back_populates="achivments")
 
 
-class Charge(Base):
+class UserCharges(Base):
     __tablename__ = "charge"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    charge: Mapped[int] = mapped_column(Integer)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    charge: Mapped[int] = mapped_column(Integer, default=5000)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user_account.id"))
     boost: Mapped[User] = relationship("User", back_populates="charges")
