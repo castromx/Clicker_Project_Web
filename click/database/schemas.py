@@ -2,6 +2,12 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+class UserCharges(BaseModel):
+    charge: int  # Кількість балів користувача
+
+    class Config:
+        from_attributes = True
+
 class UserScores(BaseModel):
     score: int  # Кількість балів користувача
 
@@ -15,6 +21,7 @@ class UserAccount(BaseModel):
     register_at: datetime  # Дата реєстрації користувача
     last_login_at: datetime  # Дата останнього входу користувача
     scores: UserScores
+    charges: UserCharges
 
     class Config:
         from_attributes = True

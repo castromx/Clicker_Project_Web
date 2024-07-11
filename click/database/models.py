@@ -12,7 +12,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     tg_id: Mapped[int] = mapped_column(unique=True)
-    scores: Mapped["ClanScore"] = relationship("UserScore", back_populates="user")
+    scores: Mapped[int] = relationship("UserScore", back_populates="user")
     clans: Mapped[int] = relationship("UsersClan", back_populates="user")
     boosts: Mapped[int] = relationship("Boosts", back_populates="user")
     achivments: Mapped[int] = relationship("UserAchivments", back_populates="user")
@@ -86,7 +86,7 @@ class UserAchivments(Base):
 
 class UserCharges(Base):
     __tablename__ = "charge"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    charge: Mapped[int] = mapped_column(Integer, default=5000)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user_account.id"))
-    boost: Mapped[User] = relationship("User", back_populates="charges")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    charge: Mapped[int] = mapped_column(default=5000)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
+    user: Mapped[User] = relationship("User", back_populates="charges")
