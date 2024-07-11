@@ -38,12 +38,6 @@ body {
     margin-right: 10px;
 }
 
-.user-score {
-    margin-top: -100px;
-    text-align: left;
-    margin-left: 10px;
-}
-
 .user-boosts-details {
     margin-top: -100px; /* Якщо вам потрібно зсунути контейнер наверх */
     margin-left: auto;
