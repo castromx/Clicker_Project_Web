@@ -248,3 +248,11 @@ def add_charge_point(db: Session, user_id: int, points: int):
     db.commit()
     db.refresh(charge_c)
     return charge.charge
+
+def div_charge_point(db: Session, user_id: int, points: int):
+    charge = get_user_charge(db, user_id)
+    charge_c = charge.charge - points
+    db.add(charge_c)
+    db.commit()
+    db.refresh(charge_c)
+    return charge.charge
