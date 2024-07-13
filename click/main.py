@@ -70,7 +70,7 @@ async def add_user_scores(user_id: int, count: int, db: Session = Depends(get_db
         if clan:
             clan_id = clan.id
             crud.add_clan_point(db, clan_id)
-        crud.dev_charge(db, user_id)
+        crud.div_charge_point(db, user_id, 1)
         charge_after = boosts.charge_count
         count_after = crud.get_user_scores(db, user_id)
         return {"charge": charge_after, "count": count_after.score}
