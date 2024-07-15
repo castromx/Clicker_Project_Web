@@ -1,4 +1,7 @@
+import aioredis
 from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from database import schemas, models, crud
@@ -7,11 +10,17 @@ from database.database import get_db_session
 from task_router import router
 app = FastAPI()
 app.include_router(router)
-
+from fastapi_cache.decorator import cache
 
 @app.get("/")
 async def root():
     return status.HTTP_200_OK
+
+
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.create_redis('redis://localhost:6379')
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
 origins = [
@@ -90,6 +99,7 @@ async def get_user_boosts(user_id: int, db: Session = Depends(get_db_session)):
 
 
 @app.post("/clans/", response_model=schemas.Clan)
+@cache(expire=60)
 async def create_clan(clan: schemas.ClanCreate, db: Session = Depends(get_db_session)):
     db_image = db.query(models.Image).filter(models.Image.id == clan.img_id).first()
     clan = crud.create_clan(db=db, clan=clan)
@@ -165,6 +175,7 @@ async def get_clan_member(clan_id: int, db: Session = Depends(get_db_session)):
 
 
 @app.get("/get_leaderboard_user")
+@cache(expire=60)
 async def get_leaderboard_user(db: Session = Depends(get_db_session)):
     return crud.get_leader_users(db)
 
