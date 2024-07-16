@@ -152,6 +152,7 @@ async def add_point_clan(clan_id: int, db: Session = Depends(get_db_session)):
 
 
 @app.get('/get_all_clans')
+@cache(expire=60)
 async def get_all_clans(db: Session = Depends(get_db_session)):
     return crud.get_clans(db)
 
@@ -176,11 +177,13 @@ async def get_clan_member(clan_id: int, db: Session = Depends(get_db_session)):
 
 @app.get("/get_leaderboard_user")
 @cache(expire=60)
+@cache(expire=60)
 async def get_leaderboard_user(db: Session = Depends(get_db_session)):
     return crud.get_leader_users(db)
 
 
 @app.get("/get_leaderboard_clan")
+@cache(expire=60)
 async def get_leaderboard_clan(db: Session = Depends(get_db_session)):
     return crud.get_leader_clans(db)
 
