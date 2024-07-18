@@ -243,3 +243,11 @@ async def fill_charge(user_id: int, point: int, db: Session = Depends(get_db_ses
     if charge < max_charge:
         crud.add_charge_point(db, user_id, point)
     return {"fill": "full"}
+
+
+@app.post("/div_point")
+async def div_user_point(user_id: int db: Session = Depends(get_db_session)):
+    point = crud.get_user_scores(db, user_id)
+    point = point.score
+    if point > price:
+        return crud.div_points(db, user_id)
