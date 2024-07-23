@@ -39,7 +39,7 @@ app.add_middleware(
 
 
 @app.post("/create_user")
-async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_session)) -> schemas.UserAccount:
+async def create_user(user: schemas.UserAccount, db: Session = Depends(get_db_session)):
     user = crud.create_user(db=db, user=user)
     crud.create_user_score(db, user.id)
     crud.create_user_boost(db, user.id)
