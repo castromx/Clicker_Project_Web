@@ -63,10 +63,6 @@ body {
 }
 
 
-.main-photo.animate {
-    transform: scale(1.2);
-}
-
 /* Центрування контейнера додатка */
 .app-container {
     display: flex;
