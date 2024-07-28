@@ -1,3 +1,28 @@
+::-webkit-scrollbar {
+    width: 12px; 
+    height: 12px; 
+}
+
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* scrollbar-width: thin;
+scrollbar-color: #888 #f1f1f1; */
+
+
 body {
     background: linear-gradient(to bottom, #03B3FF, #FF03A1);
     height: 100vh;
@@ -9,14 +34,8 @@ body {
 }
 
 .user-details {
-    text-align: right;
+    text-align: center;
     margin-right: 10px;
-}
-
-.user-score {
-    margin-top: -100px;
-    text-align: left;
-    margin-left: 10px;
 }
 
 .user-boosts-details {
@@ -100,7 +119,8 @@ body {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 200;
+    width: 80%; /* Ширина контейнера, можна змінити на потрібну */
+    padding: 20px; /* Відступи всередині контейнера */
     max-width: 600px;
     min-width: 300px;
 }
@@ -129,4 +149,154 @@ body {
 .clan-points {
     font-size: 14px;
     margin-left: 100px;
+}
+
+.clan-members-menu {
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.248);
+    padding: 10px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    min-width: 300px;
+}
+
+.close-button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.EnterClan {
+    background-color: rgb(35, 237, 45);
+    border-radius: 5px;
+    border: none;
+}
+
+.ExitClan {
+    background-color: rgb(236, 104, 104);
+    border-radius: 5px;
+    border: none;
+}
+
+.clan-info {
+    display:grid;
+    margin-top: 5px;
+    flex-direction: column;
+}
+
+.user-container {
+    display: flex;
+    align-items: flex-start; /* Вирівнювання елементів від початку контейнера */
+    margin: 20px auto;
+    background-color: #797979;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Ширина контейнера, можна змінити на потрібну */
+    padding: 20px; /* Відступи всередині контейнера */
+    max-width: 600px;
+    min-width: 300px;
+}
+
+.user-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 100px;
+}
+
+.user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: -70px;
+}
+
+.user-points {
+    font-size: 14px;
+    margin-left: 100px;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Вирівнювання по центру */
+    margin: 20px auto;
+    background-color: #797979;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 30%; /* Ширина контейнера, можна змінити на потрібну */
+    height: auto; /* Висота контейнера */
+}
+
+.tab-buttons button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    background-color: #ffffff00;
+    border: 1px solid #ffffff00;
+    border-radius: 4px;
+    }
+    
+.tab-buttons button.active {
+    background-color: #ffffff00;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+.tab-text {
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: default;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    white-space: nowrap; /* Забезпечує відображення тексту в одну лінію */
+}
+
+.divider {
+    margin: 0 10px;
+    color: #000;
+}
+
+.buy-boosts-details {
+    margin-top: 50px; /* Зсув контейнера наверх */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Центрує текст всередині контейнера */
+    width: 500px; /* Контейнер має ширину, що відповідає його вмісту */
+    padding: 20px; /* Додаткові відступи всередині контейнера */
+    border: 1px solid #ddd; /* Для візуальної чіткості контейнера */
+    background-color: rgba(255, 255, 255, 0.1); /* Напівпрозорий фон */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fill-char-count-class, .mine-coint-class, .charge-count-class {
+    margin-bottom: 20px; /* Відступ між блоками */
+    background-color: rgba(255, 255, 255, 0.2); /* Напівпрозорий фон */
+    padding: 10px;
+    border-radius: 10px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boosts-button-class {
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.boosts-button-class:hover {
+    background-color: #ff4500;
 }

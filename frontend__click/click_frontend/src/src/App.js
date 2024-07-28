@@ -17,6 +17,7 @@ function App() {
                     <Route exact path="/clans" element={<ClanPage />} />
                     <Route exact path="/leaderboard" element={<LeaderBoardPage />} />
                     <Route exact path="/bosts" element={<BoostsPage />} />
+                </Routes>
             </div>
         </Router>
     );
