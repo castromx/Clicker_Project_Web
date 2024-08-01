@@ -9,14 +9,13 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 import aioredis
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"  # Використовуйте SQLite для тестування
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db" 
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)
 
-# Залежність для тестування
 def override_get_db_session():
     try:
         db = TestingSessionLocal()
@@ -62,7 +61,6 @@ async def test_get_all_users(client):
     assert response.status_code == 200
     assert len(response.json()) > 0
 
-# Додайте більше тестів для інших ендпоінтів
 
 @pytest.mark.asyncio
 async def test_create_clan(client):
