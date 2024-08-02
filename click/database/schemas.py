@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class UserCharges(BaseModel):
-    charge: int 
+    charge: int  # Кількість балів користувача
 
     class Config:
         from_attributes = True

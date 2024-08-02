@@ -1,16 +1,25 @@
-from sqlalchemy import MetaData, create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from typing import AsyncGenerator
 
-DATABASE_URL = 'sqlite:///dev.db'
-engine = create_engine(DATABASE_URL, connect_args={'check_same_thread': False})
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
+from ..config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
+DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-Base = declarative_base()
-Session = sessionmaker(autoflush=False, bind=engine)
-metadata = MetaData()
 
-def get_db_session():
-    db = Session()
-    try:
-        yield db
-    finally:
-        db.close()
+class Base(DeclarativeBase):
+    pass
+
+
+engine = create_async_engine(DATABASE_URL)
+async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
+
+
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
+        yield session

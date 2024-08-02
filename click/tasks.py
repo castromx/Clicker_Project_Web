@@ -6,9 +6,7 @@ DATABASE_URL = DATABASE_URL
 engine = engine
 SessionLocal = Session
 
-
 celery = Celery('tasks', broker='redis://localhost:6379')
-
 
 @celery.task
 def add_point_task(user_id: int, count: int):
@@ -16,7 +14,6 @@ def add_point_task(user_id: int, count: int):
     score = crud.add_point(db, count, user_id)
     db.close()
     return score
-
 
 @celery.task
 def add_charge_count(db: Session, user_id: int):
