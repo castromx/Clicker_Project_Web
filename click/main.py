@@ -1,7 +1,7 @@
 import aioredis
 from fastapi import FastAPI, status, Depends, HTTPException, UploadFile, File
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
+# from fastapi_cache import FastAPICache
+# from fastapi_cache.backends.redis import RedisBackend
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from database import schemas, models, crud
@@ -10,17 +10,17 @@ from database.database import get_async_session
 from task_router import router
 app = FastAPI()
 app.include_router(router)
-from fastapi_cache.decorator import cache
+# from fastapi_cache.decorator import cache
 
 @app.get("/")
 async def root():
     return status.HTTP_200_OK
 
 
-@app.on_event("startup")
-async def startup():
-    redis = aioredis.create_redis('redis://localhost:6379')
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+# @app.on_event("startup")
+# async def startup():
+#     redis = aioredis.create_redis('redis://localhost:6379')
+#     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
 origins = [
@@ -40,11 +40,11 @@ app.add_middleware(
 
 @app.post("/create_user")
 async def create_user(user: schemas.UserAccount, db: Session = Depends(get_async_session)) -> schemas.UserAccount:
-    user = crud.create_user(db=db, user=user)
-    crud.create_user_score(db, user.id)
-    crud.create_user_boost(db, user.id)
-    crud.create_user_achivments(db, user.id)
-    crud.create_user_charge(db, user.id)
+    user = await crud.create_user(db=db, user=user)
+    await crud.create_user_score(db, user.id)
+    await crud.create_user_boost(db, user.id)
+    await crud.create_user_achivments(db, user.id)
+    await crud.create_user_charge(db, user.id)
     return user
 
 
@@ -70,18 +70,18 @@ async def create_user_scores(user_id: int, db: Session = Depends(get_async_sessi
 
 @app.post("/add_user_scores")
 async def add_user_scores(user_id: int, count: int, db: Session = Depends(get_async_session)):
-    boosts = crud.get_user_boosts(db, user_id)
+    boosts = await crud.get_user_boosts(db, user_id)
     charge = boosts.charge_count * 600
     count = boosts.mine_coint * count
     if charge > 1:
-        crud.add_point(db, count, user_id)
+        await crud.add_point(db, count, user_id)
         clan = crud.get_clans_for_user(db, user_id)
         if clan:
             clan_id = clan.id
-            crud.add_clan_point(db, clan_id)
-        crud.div_charge_point(db, user_id, 1)
+            await crud.add_clan_point(db, clan_id)
+        await crud.div_charge_point(db, user_id, 1)
         charge_after = boosts.charge_count
-        count_after = crud.get_user_scores(db, user_id)
+        count_after = await crud.get_user_scores(db, user_id)
         return {"charge": charge_after, "count": count_after.score}
     elif charge < 1:
         return "Energy charge too low"
@@ -99,7 +99,6 @@ async def get_user_boosts(user_id: int, db: Session = Depends(get_async_session)
 
 
 @app.post("/clans/", response_model=schemas.Clan)
-@cache(expire=60)
 async def create_clan(clan: schemas.ClanCreate, db: Session = Depends(get_async_session)):
     db_image = db.query(models.Image).filter(models.Image.id == clan.img_id).first()
     clan = crud.create_clan(db=db, clan=clan)
@@ -175,7 +174,6 @@ async def get_clan_member(clan_id: int, db: Session = Depends(get_async_session)
 
 
 @app.get("/get_leaderboard_user")
-@cache(expire=60)
 async def get_leaderboard_user(db: Session = Depends(get_async_session)):
     return crud.get_leader_users(db)
 
@@ -245,3 +243,5 @@ async def fill_charge(user_id: int, point: int, db: Session = Depends(get_async_
 @app.post("/div_point")
 async def div_user_point(user_id: int, db: Session = Depends(get_async_session)):
     return crud.div_charge_point(db, user_id, 1)
+
+
