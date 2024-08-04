@@ -41,7 +41,7 @@ async def get_user_scores(db: Session, user_id: int):
 
 # Функція для додавання балів користувачу
 async def add_point(db: Session, count: int, user_id: int):
-    user = get_user(db, user_id)
+    user = await get_user(db, user_id)
     user_id = user.id
     score_user = get_user_scores(db, user_id)
     score_user.score += count
@@ -53,7 +53,7 @@ async def add_point(db: Session, count: int, user_id: int):
 
 # Функція для створення підсилення для користувача
 async def create_user_boost(db: Session, user_id: int):
-    user = get_user(db, user_id)
+    user = await get_user(db, user_id)
     user_id = user.id
     boosts = models.Boosts(user_id=user_id, fill_char_count=1, charge_count=1, mine_coint=1)
     db.add(boosts)
@@ -69,7 +69,7 @@ async def get_user_boosts(db: Session, user_id: int):
 
 # Функція для зменшення заряду підсилення у користувача
 async def dev_charge(db: Session, user_id: int):
-    boosts = get_user_boosts(db, user_id)
+    boosts = await get_user_boosts(db, user_id)
     count_miner = boosts.mine_coint
     boosts.charge_count -= count_miner
     db.commit()
@@ -101,7 +101,7 @@ async def get_clan(db: Session, clan_id: int):
 
 # Функція для створення початкових балів клану
 async def create_clan_score(db: Session, clan_id: int):
-    clan = get_clan(db, clan_id)
+    clan = await get_clan(db, clan_id)
     clan_id = clan.id
     scores = models.ClanScore(clan_id=clan_id, score=0)
     db.add(scores)
@@ -117,9 +117,9 @@ async def get_clan_scores(db: Session, clan_id: int):
 
 # Функція для додавання балів клану
 async def add_clan_point(db: Session, clan_id: int):
-    clan = get_clan(db, clan_id)
+    clan = await get_clan(db, clan_id)
     clan_id = clan.id
-    score_clan = get_clan_scores(db, clan_id)
+    score_clan = await get_clan_scores(db, clan_id)
     score_clan.score += 1
     db.add(score_clan)
     db.commit()
@@ -181,14 +181,14 @@ async def get_leader_clans(db: Session):
 
 
 async def div_points(db: Session, user_id: int, price: int):
-    points = get_user_scores(db, user_id)
+    points = await get_user_scores(db, user_id)
     points.score -= price
     db.commit()
     return points.score
 
 
 async def buy_fill_char(db: Session, user_id: int):
-    bosts = get_user_boosts(db, user_id)
+    bosts = await get_user_boosts(db, user_id)
     fillchar = bosts.fill_char_count
     if fillchar < 3:
         bosts.fill_char_count += 1
@@ -197,7 +197,7 @@ async def buy_fill_char(db: Session, user_id: int):
 
 
 async def buy_charge_count(db: Session, user_id: int):
-    bosts = get_user_boosts(db, user_id)
+    bosts = await get_user_boosts(db, user_id)
     charge = bosts.charge_count
     if charge < 3:
         bosts.charge_count += 1
@@ -206,7 +206,7 @@ async def buy_charge_count(db: Session, user_id: int):
 
 
 async def buy_mine_coint(db: Session, user_id: int):
-    bosts = get_user_boosts(db, user_id)
+    bosts = await get_user_boosts(db, user_id)
     mine_c = bosts.mine_coint
     if mine_c < 3:
         bosts.mine_coint += 1
@@ -215,7 +215,7 @@ async def buy_mine_coint(db: Session, user_id: int):
 
 
 async def create_user_achivments(db: Session, user_id: int):
-    user = get_user(db, user_id)
+    user = await get_user(db, user_id)
     user_id = user.id
     achivments = models.UserAchivments(user_id=user_id, up_50k=0, up_100k=0, up_500k=0, up_1million=0)
     db.add(achivments)
@@ -242,7 +242,7 @@ async def get_user_charge(db: Session, user_id: int):
     return db.query(models.UserCharges).filter(models.UserCharges.user_id == user_id).first()
 
 async def add_charge_point(db: Session, user_id: int, points: int):
-    charge = get_user_charge(db, user_id)
+    charge = await get_user_charge(db, user_id)
     charge_c = charge.charge + points
     db.add(charge_c)
     db.commit()
@@ -251,7 +251,7 @@ async def add_charge_point(db: Session, user_id: int, points: int):
 
 
 async def div_charge_point(db: Session, user_id: int, points: int):
-    charge = get_user_charge(db, user_id)
+    charge = await get_user_charge(db, user_id)
     charge_c = charge.charge - points
     db.add(charge_c)
     db.commit()
