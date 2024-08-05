@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session, joinedload
 from datetime import datetime
 from . import schemas, models
 from typing import List
-
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 # Функція для створення нового користувача
 async def create_user(db: Session, user: schemas.UserAccount):
@@ -25,7 +26,7 @@ async def get_all_users(db: Session):
 
 # Функція для створення початкових балів користувача
 async def create_user_score(db: Session, user_id: int):
-    user = get_user(db, user_id)
+    user = await get_user(db, user_id)
     user_id = user.id
     scores = models.UserScore(user_id=user_id, score=0)
     db.add(scores)
@@ -86,11 +87,28 @@ async def create_image(db: Session, image_data: bytes):
 
 
 # Функція для створення клану
-async def create_clan(db: Session, clan: schemas.ClanCreate):
-    db_clan = models.Clan(name=clan.name, img_id=clan.img_id)
+async def create_clan(db: AsyncSession, clan: schemas.ClanCreate):
+    # Створюємо новий об'єкт клану
+    db_clan = models.Clan(**clan.dict())
+
+    # Додаємо клан до сесії
     db.add(db_clan)
-    db.commit()
-    db.refresh(db_clan)
+
+    # Зберігаємо зміни
+    await db.commit()
+
+    # Оновлюємо клан
+    await db.refresh(db_clan)
+
+    # Запит на отримання зображення
+    stmt = select(models.Image).filter(models.Image.id == clan.img_id)
+    result = await db.execute(stmt)
+    db_image = result.scalars().first()
+
+    # Додаємо зображення до клану, якщо знайдене
+    if db_image:
+        db_clan.image = db_image
+
     return db_clan
 
 
@@ -229,7 +247,7 @@ async def get_user_achivments(db: Session, user_id: int):
 
 
 async def create_user_charge(db: Session, user_id: int):
-    user = get_user(db, user_id)
+    user = await get_user(db, user_id)
     user_id = user.id
     charge = models.UserCharges(user_id=user_id, charge=5000)
     db.add(charge)

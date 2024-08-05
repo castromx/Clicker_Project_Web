@@ -7,7 +7,7 @@ from database.database import get_async_session
 from task_router import router
 app = FastAPI()
 app.include_router(router)
-
+from sqlalchemy.future import select
 @app.get("/")
 async def root():
     return status.HTTP_200_OK
@@ -91,12 +91,19 @@ async def get_user_boosts(user_id: int, db: Session = Depends(get_async_session)
 
 @app.post("/clans/", response_model=schemas.Clan)
 async def create_clan(clan: schemas.ClanCreate, db: Session = Depends(get_async_session)):
-    db_image = db.query(models.Image).filter(models.Image.id == clan.img_id).first()
-    clan = await crud.create_clan(db=db, clan=clan)
-    await crud.create_clan_score(db, clan.id)
+    # Перевірка наявності зображення
+    stmt = select(models.Image).filter(models.Image.id == clan.img_id)
+    result = await db.execute(stmt)
+    db_image = result.scalars().first()
+
     if not db_image:
         raise HTTPException(status_code=422, detail="Image not found")
-    return clan
+
+    # Створення клану
+    db_clan = await crud.create_clan(db=db, clan=clan)
+    await crud.create_clan_score(db, db_clan.id)
+
+    return db_clan
 
 
 

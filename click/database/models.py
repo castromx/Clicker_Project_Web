@@ -21,6 +21,7 @@ class User(Base):
     last_login_at: Mapped[datetime]
 
 
+
 class Boosts(Base):
     __tablename__ = "boosts"
     id: Mapped[int] = mapped_column(primary_key=True)
