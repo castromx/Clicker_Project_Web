@@ -88,24 +88,13 @@ async def create_image(db: Session, image_data: bytes):
 
 # Функція для створення клану
 async def create_clan(db: AsyncSession, clan: schemas.ClanCreate):
-    # Створюємо новий об'єкт клану
     db_clan = models.Clan(**clan.dict())
-
-    # Додаємо клан до сесії
     db.add(db_clan)
-
-    # Зберігаємо зміни
     await db.commit()
-
-    # Оновлюємо клан
     await db.refresh(db_clan)
-
-    # Запит на отримання зображення
     stmt = select(models.Image).filter(models.Image.id == clan.img_id)
     result = await db.execute(stmt)
     db_image = result.scalars().first()
-
-    # Додаємо зображення до клану, якщо знайдене
     if db_image:
         db_clan.image = db_image
 
