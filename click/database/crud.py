@@ -1,88 +1,97 @@
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import joinedload
 from datetime import datetime
 from . import schemas, models
-from typing import List
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
 # Функція для створення нового користувача
-async def create_user(db: Session, user: schemas.UserAccount):
+async def create_user(db: AsyncSession, user: schemas.UserAccount):
     time_now = datetime.utcnow()
     user_data = user.dict(exclude={"register_at", "last_login_at"})
     db_user = models.User(**user_data, register_at=time_now, last_login_at=time_now)
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    await db.commit()
+    await db.refresh(db_user)
     return db_user
 
 
 # Функція для отримання користувача за його ID
-async def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+async def get_user(db: AsyncSession, user_id: int):
+    result = await db.execute(select(models.User).filter(models.User.id == user_id))
+    return result.scalars().first()
 
 
-async def get_all_users(db: Session):
-    return db.query(models.User).all()
+async def get_all_users(db: AsyncSession):
+    result = await db.execute(select(models.User))
+    return result.scalars().all()
+
 
 # Функція для створення початкових балів користувача
-async def create_user_score(db: Session, user_id: int):
+async def create_user_score(db: AsyncSession, user_id: int):
     user = await get_user(db, user_id)
-    user_id = user.id
-    scores = models.UserScore(user_id=user_id, score=0)
+    if user is None:
+        return None
+    scores = models.UserScore(user_id=user.id, score=0)
     db.add(scores)
-    db.commit()
-    db.refresh(scores)
+    await db.commit()
+    await db.refresh(scores)
     return scores
 
 
 # Функція для отримання балів користувача за його ID
-async def get_user_scores(db: Session, user_id: int):
-    return db.query(models.UserScore).filter(models.UserScore.user_id == user_id).first()
+async def get_user_scores(db: AsyncSession, user_id: int):
+    result = await db.execute(select(models.UserScore).filter(models.UserScore.user_id == user_id))
+    return result.scalars().first()
 
 
 # Функція для додавання балів користувачу
-async def add_point(db: Session, count: int, user_id: int):
-    user = await get_user(db, user_id)
-    user_id = user.id
-    score_user = get_user_scores(db, user_id)
+async def add_point(db: AsyncSession, count: int, user_id: int):
+    score_user = await get_user_scores(db, user_id)
+    if score_user is None:
+        return None
     score_user.score += count
     db.add(score_user)
-    db.commit()
-    db.refresh(score_user)
+    await db.commit()
+    await db.refresh(score_user)
     return score_user
 
 
 # Функція для створення підсилення для користувача
-async def create_user_boost(db: Session, user_id: int):
+async def create_user_boost(db: AsyncSession, user_id: int):
     user = await get_user(db, user_id)
-    user_id = user.id
-    boosts = models.Boosts(user_id=user_id, fill_char_count=1, charge_count=1, mine_coint=1)
+    if user is None:
+        return None
+    boosts = models.Boosts(user_id=user.id, fill_char_count=1, charge_count=1, mine_coint=1)
     db.add(boosts)
-    db.commit()
-    db.refresh(boosts)
+    await db.commit()
+    await db.refresh(boosts)
     return boosts
 
 
 # Функція для отримання підсилення користувача за його ID
-async def get_user_boosts(db: Session, user_id: int):
-    return db.query(models.Boosts).filter(models.Boosts.user_id == user_id).first()
+async def get_user_boosts(db: AsyncSession, user_id: int):
+    result = await db.execute(select(models.Boosts).filter(models.Boosts.user_id == user_id))
+    return result.scalars().first()
 
 
 # Функція для зменшення заряду підсилення у користувача
-async def dev_charge(db: Session, user_id: int):
+async def dev_charge(db: AsyncSession, user_id: int):
     boosts = await get_user_boosts(db, user_id)
+    if boosts is None:
+        return None
     count_miner = boosts.mine_coint
     boosts.charge_count -= count_miner
-    db.commit()
+    await db.commit()
     return boosts.charge_count
 
 
 # Функція для створення зображення
-async def create_image(db: Session, image_data: bytes):
+async def create_image(db: AsyncSession, image_data: bytes):
     db_image = models.Image(data=image_data)
     db.add(db_image)
-    db.commit()
-    db.refresh(db_image)
+    await db.commit()
+    await db.refresh(db_image)
     return db_image
 
 
@@ -92,175 +101,223 @@ async def create_clan(db: AsyncSession, clan: schemas.ClanCreate):
     db.add(db_clan)
     await db.commit()
     await db.refresh(db_clan)
-    stmt = select(models.Image).filter(models.Image.id == clan.img_id)
-    result = await db.execute(stmt)
-    db_image = result.scalars().first()
-    if db_image:
-        db_clan.image = db_image
-
+    if clan.img_id:
+        stmt = select(models.Image).filter(models.Image.id == clan.img_id)
+        result = await db.execute(stmt)
+        db_image = result.scalars().first()
+        if db_image:
+            db_clan.image = db_image
+            await db.commit()
+            await db.refresh(db_clan)
     return db_clan
 
 
 # Функція для отримання клану за його ID
-async def get_clan(db: Session, clan_id: int):
-    return db.query(models.Clan).filter(models.Clan.id == clan_id).first()
+async def get_clan(db: AsyncSession, clan_id: int):
+    result = await db.execute(select(models.Clan).filter(models.Clan.id == clan_id))
+    return result.scalars().first()
 
 
 # Функція для створення початкових балів клану
-async def create_clan_score(db: Session, clan_id: int):
+async def create_clan_score(db: AsyncSession, clan_id: int):
     clan = await get_clan(db, clan_id)
-    clan_id = clan.id
-    scores = models.ClanScore(clan_id=clan_id, score=0)
+    if clan is None:
+        return None
+    scores = models.ClanScore(clan_id=clan.id, score=0)
     db.add(scores)
-    db.commit()
-    db.refresh(scores)
+    await db.commit()
+    await db.refresh(scores)
     return scores
 
 
 # Функція для отримання балів клану за його ID
-async def get_clan_scores(db: Session, clan_id: int):
-    return db.query(models.ClanScore).filter(models.ClanScore.clan_id == clan_id).first()
+async def get_clan_scores(db: AsyncSession, clan_id: int):
+    result = await db.execute(select(models.ClanScore).filter(models.ClanScore.clan_id == clan_id))
+    return result.scalars().first()
 
 
 # Функція для додавання балів клану
-async def add_clan_point(db: Session, clan_id: int):
-    clan = await get_clan(db, clan_id)
-    clan_id = clan.id
+async def add_clan_point(db: AsyncSession, clan_id: int):
     score_clan = await get_clan_scores(db, clan_id)
+    if score_clan is None:
+        return None
     score_clan.score += 1
     db.add(score_clan)
-    db.commit()
-    db.refresh(score_clan)
+    await db.commit()
+    await db.refresh(score_clan)
     return score_clan
 
 
 # Функція для приєднання користувача до клану
-async def enter_in_clan(db: Session, clan_id: int, user_id: int):
+async def enter_in_clan(db: AsyncSession, clan_id: int, user_id: int):
     db_clan_enter = models.UsersClan(user_id=user_id, clan_id=clan_id)
     db.add(db_clan_enter)
-    db.commit()
-    db.refresh(db_clan_enter)
+    await db.commit()
+    await db.refresh(db_clan_enter)
     return db_clan_enter
 
 
 # Функція для отримання клану користувача за його ID
-# async def get_clans_for_user(db: Session, user_id: int):
-#     return db.query(models.Clan).join(models.UsersClan).filter(models.UsersClan.user_id == user_id).first()
-
-async def get_clans_for_user(db: Session, user_id: int):
-    return db.query(models.Clan).join(models.UsersClan).filter(models.UsersClan.user_id == user_id).options(
-        joinedload(models.Clan.count_score)
-    ).first()
+async def get_clans_for_user(db: AsyncSession, user_id: int):
+    result = await db.execute(select(models.Clan)
+                              .join(models.UsersClan)
+                              .filter(models.UsersClan.user_id == user_id)
+                              .options(joinedload(models.Clan.count_score)))
+    return result.scalars().first()
 
 
 # Функція для виходу користувача з клану
-async def leave_from_clan(db: Session, user_id: int):
-    user_clan_record = db.query(models.UsersClan).filter(models.UsersClan.user_id == user_id).first()
+async def leave_from_clan(db: AsyncSession, user_id: int):
+    user_clan_record = await db.execute(select(models.UsersClan).filter(models.UsersClan.user_id == user_id))
+    user_clan_record = user_clan_record.scalars().first()
     if user_clan_record:
-        db.delete(user_clan_record)
-        db.commit()
+        await db.delete(user_clan_record)
+        await db.commit()
         return {"msg": "The user has left the clan"}
     else:
         return None
 
 
-# async def get_all_clan(db: Session):
-#     return db.query(models.Clan).all()
-
-async def get_clans(db: Session):
-    return db.query(models.Clan).join(models.UsersClan).options(joinedload(models.Clan.count_score)).all()
-
-
-async def get_image(db: Session, image_id: int):
-    return db.query(models.Image).filter(models.Image.id == image_id).first()
+# Функція для отримання всіх кланів
+async def get_clans(db: AsyncSession):
+    result = await db.execute(select(models.Clan).join(models.UsersClan).options(joinedload(models.Clan.count_score)))
+    return result.scalars().all()
 
 
-async def get_clan_members(db: Session, clan_id: int):
-    return db.query(models.User).join(models.UsersClan).filter(models.UsersClan.clan_id == clan_id).options(joinedload(models.User.scores)).all()
+# Функція для отримання зображення
+async def get_image(db: AsyncSession, image_id: int):
+    result = await db.execute(select(models.Image).filter(models.Image.id == image_id))
+    return result.scalars().first()
 
 
-async def get_leader_users(db: Session):
-    return (db.query(models.User).join(models.UserScore, models.User.id == models.UserScore.user_id).order_by(models.UserScore.score.desc()).options(joinedload(models.User.scores)).all())
+# Функція для отримання членів клану
+async def get_clan_members(db: AsyncSession, clan_id: int):
+    result = await db.execute(select(models.User)
+                              .join(models.UsersClan)
+                              .filter(models.UsersClan.clan_id == clan_id)
+                              .options(joinedload(models.User.scores)))
+    return result.scalars().all()
 
 
-async def get_leader_clans(db: Session):
-    return (db.query(models.Clan).join(models.ClanScore, models.Clan.id == models.ClanScore.clan_id).order_by(models.ClanScore.score.desc()).options(joinedload(models.Clan.count_score)).all())
+# Функція для отримання лідерів серед користувачів
+async def get_leader_users(db: AsyncSession):
+    result = await db.execute(select(models.User)
+                              .join(models.UserScore, models.User.id == models.UserScore.user_id)
+                              .order_by(models.UserScore.score.desc())
+                              .options(joinedload(models.User.scores)))
+    return result.scalars().all()
 
 
-async def div_points(db: Session, user_id: int, price: int):
+# Функція для отримання лідерів серед кланів
+async def get_leader_clans(db: AsyncSession):
+    result = await db.execute(select(models.Clan)
+                              .join(models.ClanScore, models.Clan.id == models.ClanScore.clan_id)
+                              .order_by(models.ClanScore.score.desc())
+                              .options(joinedload(models.Clan.count_score)))
+    return result.scalars().all()
+
+
+# Функція для списання балів користувача
+async def div_points(db: AsyncSession, user_id: int, price: int):
     points = await get_user_scores(db, user_id)
+    if points is None:
+        return None
     points.score -= price
-    db.commit()
+    await db.commit()
     return points.score
 
 
-async def buy_fill_char(db: Session, user_id: int):
+# Функція для покупки підсилення заповнення символів користувачем
+async def buy_fill_char(db: AsyncSession, user_id: int):
     bosts = await get_user_boosts(db, user_id)
-    fillchar = bosts.fill_char_count
-    if fillchar < 3:
+    if bosts is None:
+        return None
+    if bosts.fill_char_count < 3:
         bosts.fill_char_count += 1
-        db.commit()
+        await db.commit()
         return bosts.fill_char_count
+    return bosts.fill_char_count
 
 
-async def buy_charge_count(db: Session, user_id: int):
+# Функція для покупки підсилення заряду користувачем
+async def buy_charge_count(db: AsyncSession, user_id: int):
     bosts = await get_user_boosts(db, user_id)
-    charge = bosts.charge_count
-    if charge < 3:
+    if bosts is None:
+        return None
+    if bosts.charge_count < 3:
         bosts.charge_count += 1
-        db.commit()
+        await db.commit()
         return bosts.charge_count
+    return bosts.charge_count
 
 
-async def buy_mine_coint(db: Session, user_id: int):
+# Функція для покупки підсилення видобування монет користувачем
+async def buy_mine_coint(db: AsyncSession, user_id: int):
     bosts = await get_user_boosts(db, user_id)
-    mine_c = bosts.mine_coint
-    if mine_c < 3:
+    if bosts is None:
+        return None
+    if bosts.mine_coint < 3:
         bosts.mine_coint += 1
-        db.commit()
+        await db.commit()
         return bosts.mine_coint
+    return bosts.mine_coint
 
 
-async def create_user_achivments(db: Session, user_id: int):
+# Функція для створення досягнень користувача
+async def create_user_achivments(db: AsyncSession, user_id: int):
     user = await get_user(db, user_id)
-    user_id = user.id
-    achivments = models.UserAchivments(user_id=user_id, up_50k=0, up_100k=0, up_500k=0, up_1million=0)
+    if user is None:
+        return None
+    achivments = models.UserAchivments(user_id=user.id, up_50k=False, up_100k=False, up_500k=False, up_1million=False)
     db.add(achivments)
-    db.commit()
-    db.refresh(achivments)
+    await db.commit()
+    await db.refresh(achivments)
     return achivments
 
 
-async def get_user_achivments(db: Session, user_id: int):
-    return db.query(models.UserAchivments).filter(models.UserAchivments.user_id == user_id).first()
+# Функція для отримання досягнень користувача за його ID
+async def get_user_achivments(db: AsyncSession, user_id: int):
+    result = await db.execute(select(models.UserAchivments).filter(models.UserAchivments.user_id == user_id))
+    return result.scalars().first()
 
 
-async def create_user_charge(db: Session, user_id: int):
+# Функція для створення заряду користувача
+async def create_user_charge(db: AsyncSession, user_id: int):
     user = await get_user(db, user_id)
-    user_id = user.id
-    charge = models.UserCharges(user_id=user_id, charge=5000)
+    if user is None:
+        return None
+    charge = models.UserCharges(user_id=user.id, charge=5000)
     db.add(charge)
-    db.commit()
-    db.refresh(charge)
+    await db.commit()
+    await db.refresh(charge)
     return charge
 
 
-async def get_user_charge(db: Session, user_id: int):
-    return db.query(models.UserCharges).filter(models.UserCharges.user_id == user_id).first()
+# Функція для отримання заряду користувача за його ID
+async def get_user_charge(db: AsyncSession, user_id: int):
+    result = await db.execute(select(models.UserCharges).filter(models.UserCharges.user_id == user_id))
+    return result.scalars().first()
 
-async def add_charge_point(db: Session, user_id: int, points: int):
+
+# Функція для додавання заряду користувачу
+async def add_charge_point(db: AsyncSession, user_id: int, points: int):
     charge = await get_user_charge(db, user_id)
-    charge_c = charge.charge + points
-    db.add(charge_c)
-    db.commit()
-    db.refresh(charge_c)
+    if charge is None:
+        return None
+    charge.charge += points
+    db.add(charge)
+    await db.commit()
+    await db.refresh(charge)
     return charge.charge
 
 
-async def div_charge_point(db: Session, user_id: int, points: int):
+# Функція для списання заряду користувача
+async def div_charge_point(db: AsyncSession, user_id: int, points: int):
     charge = await get_user_charge(db, user_id)
-    charge_c = charge.charge - points
-    db.add(charge_c)
-    db.commit()
-    db.refresh(charge_c)
+    if charge is None:
+        return None
+    charge.charge -= points
+    db.add(charge)
+    await db.commit()
+    await db.refresh(charge)
     return charge.charge
