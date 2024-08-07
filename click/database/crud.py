@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # Функція для створення нового користувача
 async def create_user(db: AsyncSession, user: schemas.UserAccount):
     time_now = datetime.utcnow()
-    user_data = user.dict(exclude={"register_at", "last_login_at"})
+    user_data = user.dict(exclude={"register_at", "last_login_at", "scores", "charges"})
     db_user = models.User(**user_data, register_at=time_now, last_login_at=time_now)
     db.add(db_user)
     await db.commit()
