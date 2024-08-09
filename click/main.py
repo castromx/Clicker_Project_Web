@@ -92,7 +92,7 @@ async def get_user_boosts(user_id: int, db: AsyncSession = Depends(get_async_ses
 @app.post("/clans/", response_model=schemas.Clan)
 async def create_clan(clan: schemas.ClanCreate, db: AsyncSession = Depends(get_async_session)):
     stmt = select(models.Image).filter(models.Image.id == clan.img_id)
-    result = await db.execute(stmt)
+    result = db.execute(stmt)
     db_image = result.scalars().first()
 
     if not db_image:
