@@ -12,7 +12,7 @@ async def create_user(db: AsyncSession, user: schemas.UserAccount):
     db_user = models.User(**user_data, register_at=time_now, last_login_at=time_now)
     db.add(db_user)
     await db.commit()
-    await db.refresh(db_user)
+    db.refresh(db_user)
     return db_user
 
 
