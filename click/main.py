@@ -43,50 +43,50 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
 
 @app.get("/get_user")
 async def get_user(id_user: int, db: AsyncSession = Depends(get_async_session)) -> schemas.UserAccount:
-    return await crud.get_user(db, id_user)
+    return crud.get_user(db, id_user)
 
 
 @app.get("/get_all_users")
 async def get_all_users(db: AsyncSession = Depends(get_async_session)):
-    return await crud.get_all_users(db)
+    return crud.get_all_users(db)
 
 
 @app.get("/get_user_score")
 async def get_user_score(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return await crud.get_user_scores(db, user_id)
+    return crud.get_user_scores(db, user_id)
 
 
 @app.post("/create_user_scores")
 async def create_user_scores(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return await crud.create_user_score(db, user_id)
+    return crud.create_user_score(db, user_id)
 
 
 @app.post("/add_user_scores")
 async def add_user_scores(user_id: int, count: int, db: AsyncSession = Depends(get_async_session)):
-    boosts = await crud.get_user_boosts(db, user_id)
+    boosts = crud.get_user_boosts(db, user_id)
     charge = boosts.charge_count * 600
     count = boosts.mine_coint * count
     if charge > 1:
-        await crud.add_point(db, count, user_id)
-        clan = await crud.get_clans_for_user(db, user_id)
+        crud.add_point(db, count, user_id)
+        clan = crud.get_clans_for_user(db, user_id)
         if clan:
             clan_id = clan.id
-            await crud.add_clan_point(db, clan_id)
-        await crud.div_charge_point(db, user_id, 1)
+            crud.add_clan_point(db, clan_id)
+        crud.div_charge_point(db, user_id, 1)
         charge_after = boosts.charge_count
-        count_after = await crud.get_user_scores(db, user_id)
+        count_after = crud.get_user_scores(db, user_id)
         return {"charge": charge_after, "count": count_after.score}
     raise HTTPException(status_code=422, detail="Energy charge too low")
 
 
 @app.post("/create_user_boosts")
 async def create_user_boosts(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return await crud.create_user_boost(db, user_id)
+    return crud.create_user_boost(db, user_id)
 
 
 @app.get("/get_user_boosts")
 async def get_user_boosts(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return await crud.get_user_boosts(db, user_id)
+    return crud.get_user_boosts(db, user_id)
 
 
 @app.post("/clans/", response_model=schemas.Clan)
