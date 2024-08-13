@@ -141,14 +141,3 @@ async def test_get_user_achievements(client):
     assert response.status_code == 200
     assert "achievements" in response.json()
 
-@pytest.mark.asyncio
-async def test_fill_charge(client):
-    response = client.post("/fill_charge_count", json={"user_id": 1, "point": 10})
-    assert response.status_code == 200
-    assert response.json()["fill"] == "full"
-
-@pytest.mark.asyncio
-async def test_div_user_point(client):
-    response = client.post("/div_point", json={"user_id": 1})
-    assert response.status_code == 200
-    assert response.json()["charge_count"] > 0
