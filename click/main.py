@@ -203,8 +203,8 @@ async def buy_charge(user_id: int, db: AsyncSession = Depends(get_async_session)
     point = point.score
     price = point * 10
     if point > price:
-        await crud.div_points(db, user_id, price)
-        return await crud.buy_charge_count(db, user_id)
+        crud.div_points(db, user_id, price)
+        return crud.buy_charge_count(db, user_id)
     raise HTTPException(status_code=422, detail="Not enough points")
 
 
