@@ -11,14 +11,14 @@ async def create_user(db: AsyncSession, user: schemas.UserAccount):
     user_data = user.dict(exclude={"register_at", "last_login_at", "scores", "charges"})
     db_user = models.User(**user_data, register_at=time_now, last_login_at=time_now)
     db.add(db_user)
-    await db.commit()
+    db.commit()
     db.refresh(db_user)
     return db_user
 
 
 # Функція для отримання користувача за його ID
 async def get_user(db: AsyncSession, user_id: int):
-    result = await db.execute(select(models.User).filter(models.User.id == user_id))
+    result = db.execute(select(models.User).filter(models.User.id == user_id))
     return result.scalars().first()
 
 
