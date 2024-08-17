@@ -43,56 +43,56 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
 
 @app.get("/get_user")
 async def get_user(id_user: int, db: AsyncSession = Depends(get_async_session)) -> schemas.UserAccount:
-    return crud.get_user(db, id_user)
+    return await crud.get_user(db, id_user)
 
 
 @app.get("/get_all_users")
 async def get_all_users(db: AsyncSession = Depends(get_async_session)):
-    return crud.get_all_users(db)
+    return await crud.get_all_users(db)
 
 
 @app.get("/get_user_score")
 async def get_user_score(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return crud.get_user_scores(db, user_id)
+    return await crud.get_user_scores(db, user_id)
 
 
 @app.post("/create_user_scores")
 async def create_user_scores(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return crud.create_user_score(db, user_id)
+    return await crud.create_user_score(db, user_id)
 
 
 @app.post("/add_user_scores")
 async def add_user_scores(user_id: int, count: int, db: AsyncSession = Depends(get_async_session)):
-    boosts = crud.get_user_boosts(db, user_id)
+    boosts = await crud.get_user_boosts(db, user_id)
     charge = boosts.charge_count * 600
     count = boosts.mine_coint * count
     if charge > 1:
-        crud.add_point(db, count, user_id)
-        clan = crud.get_clans_for_user(db, user_id)
+        await crud.add_point(db, count, user_id)
+        clan = await crud.get_clans_for_user(db, user_id)
         if clan:
             clan_id = clan.id
-            crud.add_clan_point(db, clan_id)
-        crud.div_charge_point(db, user_id, 1)
+            await crud.add_clan_point(db, clan_id)
+        await crud.div_charge_point(db, user_id, 1)
         charge_after = boosts.charge_count
-        count_after = crud.get_user_scores(db, user_id)
+        count_after = await crud.get_user_scores(db, user_id)
         return {"charge": charge_after, "count": count_after.score}
     raise HTTPException(status_code=422, detail="Energy charge too low")
 
 
 @app.post("/create_user_boosts")
 async def create_user_boosts(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return crud.create_user_boost(db, user_id)
+    return await crud.create_user_boost(db, user_id)
 
 
 @app.get("/get_user_boosts")
 async def get_user_boosts(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return crud.get_user_boosts(db, user_id)
+    return await crud.get_user_boosts(db, user_id)
 
 
 @app.post("/clans/", response_model=schemas.Clan)
 async def create_clan(clan: schemas.ClanCreate, db: AsyncSession = Depends(get_async_session)):
     stmt = select(models.Image).filter(models.Image.id == clan.img_id)
-    result = db.execute(stmt)
+    result = await db.execute(stmt)
     db_image = result.scalars().first()
 
     if not db_image:
@@ -203,8 +203,8 @@ async def buy_charge(user_id: int, db: AsyncSession = Depends(get_async_session)
     point = point.score
     price = point * 10
     if point > price:
-        crud.div_points(db, user_id, price)
-        return crud.buy_charge_count(db, user_id)
+        await crud.div_points(db, user_id, price)
+        return await crud.buy_charge_count(db, user_id)
     raise HTTPException(status_code=422, detail="Not enough points")
 
 
