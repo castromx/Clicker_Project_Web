@@ -1,4 +1,6 @@
+import fastapi
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -31,14 +33,19 @@ async def root():
     return {"status": "ok"}
 
 
-@app.post("/create_user")
+from fastapi import HTTPException
+
+@app.post("/create_user", response_model=schemas.UserAccount)
 async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_async_session)) -> schemas.UserAccount:
-    user = await crud.create_user(db=db, user=user)
-    await crud.create_user_score(db, user.id)
-    await crud.create_user_boost(db, user.id)
-    await crud.create_user_achivments(db, user.id)
-    await crud.create_user_charge(db, user.id)
-    return user
+    db_user = await crud.create_user(db=db, user=user)
+    if db_user:
+        await crud.create_user_score(db, db_user.id)
+        await crud.create_user_boost(db, db_user.id)
+        await crud.create_user_achivments(db, db_user.id)
+        await crud.create_user_charge(db, db_user.id)
+        return db_user
+    raise HTTPException(status_code=400, detail="User Already Exists")
+
 
 
 @app.get("/get_user")
