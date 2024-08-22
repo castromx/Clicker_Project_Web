@@ -1,6 +1,4 @@
-import fastapi
-from fastapi import FastAPI, Depends, UploadFile, File
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
