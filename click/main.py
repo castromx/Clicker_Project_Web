@@ -7,6 +7,7 @@ from database.database import get_async_session
 from task_router import router
 from sqlalchemy.future import select
 
+
 app = FastAPI()
 app.include_router(router)
 
@@ -31,19 +32,27 @@ async def root():
     return {"status": "ok"}
 
 
-from fastapi import HTTPException
-
 @app.post("/create_user", response_model=schemas.UserAccount)
-async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_async_session)) -> schemas.UserAccount:
+async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_async_session)):
     db_user = await crud.create_user(db=db, user=user)
     if db_user:
-        await crud.create_user_score(db, db_user.id)
-        await crud.create_user_boost(db, db_user.id)
-        await crud.create_user_achivments(db, db_user.id)
-        await crud.create_user_charge(db, db_user.id)
-        return db_user
-    raise HTTPException(status_code=400, detail="User Already Exists")
+        scores = await crud.create_user_score(db, db_user.id)
+        boosts = await crud.create_user_boost(db, db_user.id)
+        achivments = await crud.create_user_achivments(db, db_user.id)
+        charges = await crud.create_user_charge(db, db_user.id)
 
+        # Формування повної відповіді
+        response_user = schemas.UserAccount(
+            name=db_user.name,
+            tg_id=db_user.tg_id,
+            register_at=db_user.register_at,
+            last_login_at=db_user.last_login_at,
+            scores=scores,
+            charges=charges
+        )
+        return response_user
+
+    raise HTTPException(status_code=400, detail="User Already Exists")
 
 
 @app.get("/get_user")
