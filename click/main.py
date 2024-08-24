@@ -93,11 +93,6 @@ async def add_user_scores(user_id: int, count: int, db: AsyncSession = Depends(g
     raise HTTPException(status_code=422, detail="Energy charge too low")
 
 
-@app.post("/create_user_boosts")
-async def create_user_boosts(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    return await crud.create_user_boost(db, user_id)
-
-
 @app.get("/get_user_boosts")
 async def get_user_boosts(user_id: int, db: AsyncSession = Depends(get_async_session)):
     return await crud.get_user_boosts(db, user_id)
