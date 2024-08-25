@@ -217,17 +217,6 @@ async def buy_charge(user_id: int, db: AsyncSession = Depends(get_async_session)
     raise HTTPException(status_code=422, detail="Not enough points")
 
 
-@app.post("/buy_mine_coint")
-async def buy_mine(user_id: int, db: AsyncSession = Depends(get_async_session)):
-    point = await crud.get_user_scores(db, user_id)
-    point = point.score
-    price = point * 10
-    if point > price:
-        await crud.div_points(db, user_id, price)
-        return await crud.buy_mine_coint(db, user_id)
-    raise HTTPException(status_code=422, detail="Not enough points")
-
-
 @app.get("/get_user_achivments", response_model=schemas.Achivments)
 async def get_user_achivments(user_id: int, db: AsyncSession = Depends(get_async_session)):
     return await crud.get_user_achivments(db, user_id)
