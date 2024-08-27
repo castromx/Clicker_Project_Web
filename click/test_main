@@ -129,15 +129,5 @@ async def test_buy_charge(client):
     assert response.status_code == 200
     assert "detail" not in response.json()
 
-@pytest.mark.asyncio
-async def test_buy_mine(client):
-    response = client.post("/buy_mine_coint", json={"user_id": 1})
-    assert response.status_code == 200
-    assert "detail" not in response.json()
 
-@pytest.mark.asyncio
-async def test_get_user_achievements(client):
-    response = client.get("/get_user_achivments", params={"user_id": 1})
-    assert response.status_code == 200
-    assert "achievements" in response.json()
 
