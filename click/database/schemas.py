@@ -22,6 +22,7 @@ class UserAccount(BaseModel):
     last_login_at: datetime  # Дата останнього входу користувача
     scores: UserScores
     charges: UserCharges
+    clan: ClanCreate
 
     class Config:
         from_attributes = True
