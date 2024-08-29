@@ -10,7 +10,7 @@ const UserPage = () => {
     const [clanData, setClanData] = useState(null);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/get_user?id=1')
+        axios.get('http://127.0.0.1:8000/get_user?user_id=1')
             .then(response => {
                 setUserData(response.data);
             })
