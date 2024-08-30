@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 
-const Image{
+// const Image{
 
-    return (
-        <img
-            src={props.image}
-            alt="User Icon"
-            onClick={handleClick}
-            className={`main-photo ${animate ? 'animate' : ''}`}
-        />
-    );
-};
+//     return (
+//         <img
+//             src={props.image}
+//             alt="User Icon"
+//             onClick={handleClick}
+//             className={`main-photo ${animate ? 'animate' : ''}`}
+//         />
+//     );
+// };
 
-export default Image;
+// export default Image;
