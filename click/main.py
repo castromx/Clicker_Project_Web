@@ -37,8 +37,8 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
     db_user = await crud.create_user(db=db, user=user)
     if db_user:
         scores = await crud.create_user_score(db, db_user.id)
-        boosts = await crud.create_user_boost(db, db_user.id)
-        achivments = await crud.create_user_achivments(db, db_user.id)
+        await crud.create_user_boost(db, db_user.id)
+        await crud.create_user_achivments(db, db_user.id)
         charges = await crud.create_user_charge(db, db_user.id)
 
         # Формування повної відповіді
