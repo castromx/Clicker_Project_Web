@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+
+from database.models import User
 from database import schemas, models, crud
 from database.database import get_async_session
 from task_router import router
@@ -56,8 +58,11 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
 
 
 @app.get("/get_user")
-async def get_user(id_user: int, db: AsyncSession = Depends(get_async_session)) -> schemas.UserAccount:
-    return await crud.get_user(db, id_user)
+async def get_user(id_user: int, session: AsyncSession = Depends(get_async_session)):
+    user = await session.get(User, id_user)
+    if user is None:
+        return {"error": "User not found"}
+    return user
 
 
 @app.get("/get_all_users")
@@ -214,6 +219,17 @@ async def buy_charge(user_id: int, db: AsyncSession = Depends(get_async_session)
     if point > price:
         await crud.div_points(db, user_id, price)
         return await crud.buy_charge_count(db, user_id)
+    raise HTTPException(status_code=422, detail="Not enough points")
+
+
+@app.post("/buy_mine_coint")
+async def buy_mine(user_id: int, db: AsyncSession = Depends(get_async_session)):
+    point = await crud.get_user_scores(db, user_id)
+    point = point.score
+    price = point * 10
+    if point > price:
+        await crud.div_points(db, user_id, price)
+        return await crud.buy_mine_coint(db, user_id)
     raise HTTPException(status_code=422, detail="Not enough points")
 
 

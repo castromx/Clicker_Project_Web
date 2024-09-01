@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class UserCharges(BaseModel):
-    charge: int  # Кількість балів користувача
+    charge: int
 
     class Config:
         from_attributes = True
@@ -22,7 +22,6 @@ class UserAccount(BaseModel):
     last_login_at: datetime  # Дата останнього входу користувача
     scores: UserScores
     charges: UserCharges
-    clan: ClanCreate
 
     class Config:
         from_attributes = True
@@ -68,7 +67,7 @@ class Clan(BaseModel):
 
     class Config:
         from_attributes = True
-        json_schema_extra = {
+        schema_extra = {
             "example": {
                 "id": 1,
                 "name": "Example Clan",

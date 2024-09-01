@@ -1,4 +1,4 @@
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 from datetime import datetime
 from . import schemas, models
 from sqlalchemy.future import select
@@ -163,10 +163,13 @@ async def enter_in_clan(db: AsyncSession, clan_id: int, user_id: int):
 
 # Функція для отримання клану користувача за його ID
 async def get_clans_for_user(db: AsyncSession, user_id: int):
-    result = await db.execute(select(models.Clan)
-                              .join(models.UsersClan)
-                              .filter(models.UsersClan.user_id == user_id)
-                              .options(joinedload(models.Clan.count_score)))
+    result = await db.execute(
+        select(models.Clan)
+        .join(models.UsersClan)
+        .filter(models.UsersClan.user_id == user_id)
+        .options(selectinload(models.Clan.count_score))
+    )
+
     return result.scalars().first()
 
 
