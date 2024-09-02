@@ -57,9 +57,12 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
     raise HTTPException(status_code=400, detail="User Already Exists")
 
 
-@app.get("/get_user")
+@app.get("/get_user", response_model=schemas.UserAccount)
 async def get_user(id_user: int, session: AsyncSession = Depends(get_async_session)):
-    user = await session.get(User, id_user)
+    result = await session.execute(
+        select(User).options(selectinload(User.scores), selectinload(User.charges)).filter_by(id=id_user)
+    )
+    user = result.scalars().first()
     if user is None:
         return {"error": "User not found"}
     return user
