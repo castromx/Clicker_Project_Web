@@ -19,6 +19,8 @@
     background: #555;
 }
 
+/* scrollbar-width: thin;
+scrollbar-color: #888 #f1f1f1; */
 
 
 body {
@@ -59,7 +61,6 @@ body {
     transform: translate(-50%, -50%);
     z-index: 1;
 }
-
 
 /* Центрування контейнера додатка */
 .app-container {
