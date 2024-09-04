@@ -1,15 +1,12 @@
-// import React, { useState } from 'react';
+import React from 'react';
 
-// const Image{
+class Image extends React.Component {
 
-//     return (
-//         <img
-//             src={props.image}
-//             alt="User Icon"
-//             onClick={handleClick}
-//             className={`main-photo ${animate ? 'animate' : ''}`}
-//         />
-//     );
-// };
+    render() {
+        return (
+            <img className='main-photo' src={this.props.image} alt="User Icon"></img>
+        );
+    }
+}
 
-// export default Image;
+export default Image;
