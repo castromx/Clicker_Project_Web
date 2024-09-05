@@ -1,23 +1,22 @@
 from celery import Celery
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from database import database, crud, schemas
-from database.database import DATABASE_URL, engine, Session
-DATABASE_URL = DATABASE_URL
-engine = engine
-SessionLocal = Session
+from database.database import DATABASE_URL, get_async_session
 
 celery = Celery('tasks', broker='redis://localhost:6379')
 
 @celery.task
-def add_point_task(user_id: int, count: int):
-    db = SessionLocal()
-    score = crud.add_point(db, count, user_id)
-    db.close()
-    return score
+async def add_point_task(user_id: int, count: int):
+    async with async_session() as session:  
+        async with session.begin():
+            score = await crud.add_point(session, count, user_id)
+        return score
 
 @celery.task
-def add_charge_count(db: Session, user_id: int):
-    bosts = crud.get_user_boosts(db, user_id)
-    bosts.charge_count += 1
-    db.commit()
-    return bosts.charge_count
+async def add_charge_count(user_id: int):
+    async with async_session() as session:  
+        async with session.begin():
+            boosts = await crud.get_user_boosts(session, user_id)
+            boosts.charge_count += 1
+            await session.commit()  
+        return boosts.charge_count
