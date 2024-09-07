@@ -42,8 +42,6 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
         await crud.create_user_boost(db, db_user.id)
         await crud.create_user_achivments(db, db_user.id)
         charges = await crud.create_user_charge(db, db_user.id)
-
-        # Формування повної відповіді
         response_user = schemas.UserAccount(
             name=db_user.name,
             tg_id=db_user.tg_id,
