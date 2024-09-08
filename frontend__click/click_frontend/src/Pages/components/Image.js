@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-class Image extends React.Component {
+const Image = ({ image, onClick }) => {
+    const [isAnimating, setIsAnimating] = useState(false);
 
-    render() {
-        return (
-            <img className='main-photo' src={this.props.image} alt="User Icon"></img>
-        );
-    }
-}
+    const handleClick = () => {
+        setIsAnimating(true);
+        onClick();
+    };
+
+    const handleAnimationEnd = () => {
+        setIsAnimating(false);
+    };
+
+    return (
+        <img
+            className={`main-photo ${isAnimating ? 'animate' : ''}`}
+            src={image}
+            alt="User Icon"
+            onClick={handleClick}
+            onAnimationEnd={handleAnimationEnd}
+        />
+    );
+};
 
 export default Image;
