@@ -33,6 +33,18 @@ const UserPage = () => {
                 'Content-Type': 'application/json'
             }
         })
+        .then(() => {
+            axios.get('http://127.0.0.1:8000/get_user?id_user=1')
+                .then(response => {
+                    setUserData(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching updated user data:', error);
+                });
+        })
+        .catch(error => {
+            console.error('Error adding user scores:', error);
+        });
     };
 
     return (
