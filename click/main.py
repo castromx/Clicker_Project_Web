@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
@@ -42,6 +43,8 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
         await crud.create_user_boost(db, db_user.id)
         await crud.create_user_achivments(db, db_user.id)
         charges = await crud.create_user_charge(db, db_user.id)
+
+        # Формування повної відповіді
         response_user = schemas.UserAccount(
             name=db_user.name,
             tg_id=db_user.tg_id,
@@ -248,3 +251,27 @@ async def fill_charge(user_id: int, point: int, db: AsyncSession = Depends(get_a
     if charge < max_charge:
         await crud.add_charge_point(db, user_id, point)
     return {"fill": "full"}
+
+
+async def boost_user_balance(db: AsyncSession, user_id: int):
+    result = await db.execute(select(models.Boosts).filter(models.Boosts.user_id == user_id))
+    user_boost = result.scalars().first()
+    if user_boost and user_boost.charge_count < 1000:
+        user_boost.charge_count += 1
+        db.add(user_boost)
+        await db.commit()
+
+
+
+
+@app.get("/user_boosts/{user_id}")
+async def get_user_boosts(
+    user_id: int,
+    db: AsyncSession = Depends(get_async_session)
+):
+    result = await db.execute(select(models.Boosts).filter(models.Boosts.user_id == user_id))
+    user_boost = result.scalars().first()
+    if user_boost and user_boost.charge_count < 1000:
+        await boost_user_balance(db, user_id)
+
+    return {"message": "User boost processing started"}
