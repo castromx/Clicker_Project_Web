@@ -1,10 +1,7 @@
 from datetime import datetime
-from sqlalchemy import ForeignKey, LargeBinary, Integer
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, LargeBinary, Integer, String
 from .database import Base
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class User(Base):
