@@ -2,14 +2,9 @@ from celery import Celery
 from sqlalchemy.ext.asyncio import async_session
 from database import crud
 
+
 celery = Celery('tasks', broker='redis://localhost:6379')
 
-@celery.task
-async def add_point_task(user_id: int, count: int):
-    async with async_session() as session:
-        async with session.begin():
-            score = await crud.add_point(session, count, user_id)
-        return score
 
 @celery.task
 async def add_charge_count(user_id: int):

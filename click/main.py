@@ -3,7 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-
 from database.models import User
 from database import schemas, models, crud
 from database.database import get_async_session
