@@ -255,10 +255,12 @@ async def fill_charge(user_id: int, point: int, db: AsyncSession = Depends(get_a
 async def boost_user_balance(db: AsyncSession, user_id: int):
     result = await db.execute(select(models.Boosts).filter(models.Boosts.user_id == user_id))
     user_boost = result.scalars().first()
-    if user_boost and user_boost.charge_count < 1000:
-        user_boost.charge_count += 1
-        db.add(user_boost)
-        await db.commit()
+    charge_count = 10000
+    for i in range(charge_count):
+        if user_boost and user_boost.charge_count < charge_count:
+            user_boost.charge_count += 1
+            db.add(user_boost)
+    await db.commit()
 
 
 
@@ -270,7 +272,7 @@ async def get_user_boosts(
 ):
     result = await db.execute(select(models.Boosts).filter(models.Boosts.user_id == user_id))
     user_boost = result.scalars().first()
-    if user_boost and user_boost.charge_count < 1000:
+    if user_boost and user_boost.charge_count < 10000:
         await boost_user_balance(db, user_id)
 
     return {"message": "User boost processing started"}
