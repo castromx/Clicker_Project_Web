@@ -1,3 +1,4 @@
+from fastapi import APIRouter
 from tasks import add_charge_count
 
 
@@ -8,3 +9,4 @@ router = APIRouter()
 async def add_charge_count(user_id: int, count: int):
     add_charge_count.delay(user_id, count)
     return {"message": "Add point tadsk has been added to the queue."}
+    
