@@ -1,17 +1,16 @@
-from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+
 from database.models import User
 from database import schemas, models, crud
 from database.database import get_async_session
-from task_router import router
 from sqlalchemy.future import select
 
 
 app = FastAPI()
-app.include_router(router)
 
 # CORS middleware
 origins = [
@@ -252,27 +251,8 @@ async def fill_charge(user_id: int, point: int, db: AsyncSession = Depends(get_a
     return {"fill": "full"}
 
 
-async def boost_user_balance(db: AsyncSession, user_id: int):
-    result = await db.execute(select(models.Boosts).filter(models.Boosts.user_id == user_id))
-    user_boost = result.scalars().first()
-    charge_count = 10000
-    for i in range(charge_count):
-        if user_boost and user_boost.charge_count < charge_count:
-            user_boost.charge_count += 1
-            db.add(user_boost)
-    await db.commit()
 
-
-
-
-@app.get("/user_boosts/{user_id}")
-async def get_user_boosts(
-    user_id: int,
-    db: AsyncSession = Depends(get_async_session)
-):
-    result = await db.execute(select(models.Boosts).filter(models.Boosts.user_id == user_id))
-    user_boost = result.scalars().first()
-    if user_boost and user_boost.charge_count < 10000:
-        await boost_user_balance(db, user_id)
-
-    return {"message": "User boost processing started"}
+@app.post("/start-game/{user_id}")
+async def start_fill_charge(user_id: int, background_tasks: BackgroundTasks, db: AsyncSession = Depends(get_async_session)):
+    background_tasks.add_task(crud.refilling_charge, db, user_id)
+    return {"message": "Charge filled successfully"}

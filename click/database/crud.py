@@ -1,3 +1,5 @@
+import asyncio
+
 from sqlalchemy.orm import joinedload, selectinload
 from datetime import datetime
 from . import schemas, models
@@ -328,3 +330,15 @@ async def div_charge_point(db: AsyncSession, user_id: int, points: int):
     await db.commit()
     await db.refresh(charge)
     return charge.charge
+
+
+
+async def refilling_charge(db: AsyncSession, user_id: int):
+    while True:
+        charge = await get_user_charge(db, user_id)
+        if charge is not None and charge.charge < 5000:
+            charge.charge += 1
+            db.add(charge)
+            await db.commit()
+            await db.refresh(charge)
+        await asyncio.sleep(1)
