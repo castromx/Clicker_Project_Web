@@ -8,9 +8,14 @@ import image from "./img/image.png";
 const UserPage = () => {
     const [userData, setUserData] = useState(null);
     const [clanData, setClanData] = useState(null);
+    const [telegramUser, setTelegramUser] = useState(null);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/get_user?id_user=1')
+        const tg = window.Telegram.WebApp;
+        tg.ready(); 
+        const userId = tg.initDataUnsafe.user.id; 
+
+        axios.get(`LINK/get_user?id_user=${userId}`)
             .then(response => {
                 setUserData(response.data);
             })
@@ -18,7 +23,7 @@ const UserPage = () => {
                 console.error('Error fetching user data:', error);
             });
 
-        axios.get('http://127.0.0.1:8000/get_user_clan?user_id=1')
+        axios.get(`LINK/get_user_clan?user_id=${userId}`)
             .then(response => {
                 setClanData(response.data);
             })
@@ -28,13 +33,13 @@ const UserPage = () => {
     }, []);
 
     const handleIconClick = () => {
-        axios.post("http://localhost:8000/add_user_scores?user_id=1&count=1", {
+        axios.post(`LINK/add_user_scores?user_id=${telegramUser.id}&count=1`, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
         .then(() => {
-            axios.get('http://127.0.0.1:8000/get_user?id_user=1')
+            axios.get(`LINK/get_user?id_user=${telegramUser.id}`)
                 .then(response => {
                     setUserData(response.data);
                 })
