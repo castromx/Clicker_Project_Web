@@ -6,12 +6,19 @@ from fastapi.responses import FileResponse
 
 from database.models import User
 from database import schemas, models, crud
-from database.database import get_async_session
+from database.database import get_async_session, engine
 from sqlalchemy.future import select
-
+from sqladmin import Admin, ModelView
 
 app = FastAPI()
+admin = Admin(app, engine)
 
+
+class UserAdmin(ModelView, model=models.User):
+    column_list = [models.User.id, models.User.name]
+
+
+admin.add_view(UserAdmin)
 # CORS middleware
 origins = [
     "http://localhost",
@@ -42,7 +49,6 @@ async def create_user(user: schemas.UserAccount, db: AsyncSession = Depends(get_
         await crud.create_user_achivments(db, db_user.id)
         charges = await crud.create_user_charge(db, db_user.id)
 
-        # Формування повної відповіді
         response_user = schemas.UserAccount(
             name=db_user.name,
             tg_id=db_user.tg_id,
