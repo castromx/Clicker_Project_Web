@@ -9,27 +9,33 @@ const UserPage = () => {
     const [userData, setUserData] = useState(null);
     const [clanData, setClanData] = useState(null);
     const [telegramUser, setTelegramUser] = useState(null);
+    const [userId, setUserId] = useState(null); 
 
     useEffect(() => {
         const tg = window.Telegram.WebApp;
-        tg.ready(); 
-        const userId = tg.initDataUnsafe.user.id; 
+        tg.ready();
+    
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const userId = tg.initDataUnsafe.user.id;
+            setTelegramUser(tg.initDataUnsafe.user);
+            setUserId(userId); 
 
-        axios.get(`LINK/get_user?id_user=${userId}`)
-            .then(response => {
-                setUserData(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            });
+            axios.get(`LINK/get_user?id_user=${userId}`)
+                .then(response => {
+                    setUserData(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                });
 
-        axios.get(`LINK/get_user_clan?user_id=${userId}`)
-            .then(response => {
-                setClanData(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching clan data:', error);
-            });
+            axios.get(`LINK/get_user_clan?user_id=${userId}`)
+                .then(response => {
+                    setClanData(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching clan data:', error);
+                });
+        }
     }, []);
 
     const handleIconClick = () => {
