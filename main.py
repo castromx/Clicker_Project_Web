@@ -1,34 +1,48 @@
-import asyncio
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import CommandStart
-from aiogram.types import InlineKeyboardMarkup, WebAppInfo
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from sqladmin import Admin
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from database.database import engine
+from database.admin import UserAdmin, BoostsAdmin, UserScoreAdmin, ImageAdmin, ClanAdmin, \
+    ClanScoreAdmin, UsersClanAdmin, UserAchivmentsAdmin, UserChargesAdmin
+from routers.user_routers import router as user_router
+from routers.clan_routers import router as clan_router
+from routers.user_activity_routers import router as activity_router
 
-API_TOKEN = 'TOKEN'
-
-
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher()
-
-
-def webapp_builder():
-    builder = InlineKeyboardBuilder()
-    builder.button(
-        text="Open Web-app",
-        web_app=WebAppInfo(url="link")
-    )
-    return builder.as_markup()
+app = FastAPI()
+admin = Admin(app, engine)
 
 
+app.include_router(user_router)
+app.include_router(clan_router)
+app.include_router(activity_router)
 
-@dp.message(CommandStart())
-async def send_welcome(message: types.Message):
-    await message.reply('Open', reply_markup=webapp_builder())
+admin.add_view(UserAdmin)
+admin.add_view(BoostsAdmin)
+admin.add_view(UserScoreAdmin)
+admin.add_view(ImageAdmin)
+admin.add_view(ClanAdmin)
+admin.add_view(ClanScoreAdmin)
+admin.add_view(UsersClanAdmin)
+admin.add_view(UserAchivmentsAdmin)
+admin.add_view(UserChargesAdmin)
 
 
+# CORS middleware
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:3000",
+]
 
-async def main():
-    await dp.start_polling(bot, skip_updates=True)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-if __name__ == '__main__':
-    asyncio.run(main())
+
+@app.get("/")
+async def root():
+    return {"status": "ok"}
