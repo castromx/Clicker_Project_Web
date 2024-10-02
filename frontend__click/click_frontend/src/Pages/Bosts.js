@@ -8,7 +8,7 @@ const BoostsPage = () => {
     const [AchivmData, setAchivmData] = useState(null);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/get_user_boosts', {
+        axios.get('http://localhost:8000/get_user_boosts', {
             params: { user_id: 1 }
         })
         .then(response => {
@@ -17,7 +17,7 @@ const BoostsPage = () => {
         .catch(error => {
             console.error('Error fetching user data:', error);
         });
-        axios.get('http://127.0.0.1:8000/get_user_achivments?user_id=1')
+        axios.get('http://localhost:8000/get_user_achivments?user_id=1')
             .then(response => {
                 setAchivmData(response.data);
                 console.log(response.data);

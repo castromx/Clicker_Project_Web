@@ -12,7 +12,7 @@ const ClanPage = () => {
     const [userId] = useState(1);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/get_leaderboard_clan')
+        axios.get('http://localhost:8000/get_leaderboard_clan')
             .then(response => {
                 setClanData(response.data);
             })
@@ -38,7 +38,7 @@ const ClanPage = () => {
 
     const handleEnterClan = () => {
         if (selectedClanId) {
-            axios.post(`http://127.0.0.1:8000/enter_in_clan?user_id=${userId}&clan_id=${selectedClanId}`)
+            axios.post(`http://localhost:8000/enter_in_clan?user_id=${userId}&clan_id=${selectedClanId}`)
             .then(response => {
                 if (response.data.message) {
                     toast.error(response.data.message);
@@ -55,7 +55,7 @@ const ClanPage = () => {
     };
 
     const handleExitClan = () => {
-        axios.delete(`http://127.0.0.1:8000/leave_from_clan?user_id=${userId}`)
+        axios.delete(`http://localhost:8000/leave_from_clan?user_id=${userId}`)
         .then(response => {
             toast.success(response.data.msg);
             updateClanMembers(selectedClanId);
@@ -67,7 +67,7 @@ const ClanPage = () => {
     };
 
     const updateClanMembers = (clanId) => {
-        axios.get(`http://127.0.0.1:8000/clan_members?clan_id=${clanId}`)
+        axios.get(`http://localhost:8000/clan_members?clan_id=${clanId}`)
             .then(response => {
                 setClanMembers(response.data);
             })
