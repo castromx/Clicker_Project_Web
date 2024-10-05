@@ -1,8 +1,10 @@
 from datetime import datetime
-from sqlalchemy import ForeignKey, LargeBinary, Integer, String
+from sqlalchemy import ForeignKey, LargeBinary, Integer, String, MetaData
 from .database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+
+metadata = MetaData()
 
 class User(Base):
     __tablename__ = "user_account"
